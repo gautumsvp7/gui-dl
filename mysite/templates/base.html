@@ -1,0 +1,40 @@
+{% load static wagtailcore_tags wagtailuserbar %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}CrowdVision{% endblock %}</title>
+  <meta name="description" content="Crowd Management Using Computer Vision – CrowdVision">
+  <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+  <link rel="stylesheet" href="{% static 'icons/icons_bs/font/bootstrap-icons.css' %}">
+  <link rel="stylesheet" href="{% static 'css/crowdvision.css' %}">
+  {% block extra_css %}{% endblock %}
+</head>
+
+<body>
+  {% wagtailuserbar %}
+
+  <nav class="cv-navbar">
+    <a class="cv-navbar__brand" href="/">CrowdVision</a>
+    <ul class="cv-navbar__links">
+      <li><a href="{% url 'crowd_app:upload' %}" class="{% block nav_upload %}{% endblock %}">Upload</a></li>
+      <li><a href="{% url 'crowd_app:results' %}" class="{% block nav_results %}{% endblock %}">Results</a></li>
+      <li><a href="/about/" class="{% block nav_about %}{% endblock %}">About</a></li>
+    </ul>
+  </nav>
+
+  <div class="cv-page">
+    <div class="container">
+      {% block content %}{% endblock %}
+    </div>
+  </div>
+
+  <script src="{% static 'js/jquery.slim.min.js' %}"
+          integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
+          crossorigin="anonymous"></script>
+  <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
+
+  {% block extra_js %}{% endblock %}
+</body>
+</html>

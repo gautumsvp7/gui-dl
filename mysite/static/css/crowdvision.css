@@ -1,0 +1,320 @@
+/* crowdvision.css — blue & white theme */
+
+/* ── 1. Global tokens ────────────────────────────────────────────── */
+:root {
+  --cv-bg:          #ffffff;
+  --cv-page-bg:     #f0f4ff;
+  --cv-navy:        #0f2744;
+  --cv-blue:        #2563eb;
+  --cv-blue-light:  #dbeafe;
+  --cv-border:      #2563eb;
+  --cv-text:        #0f2744;
+  --cv-muted:       #6b8cb8;
+  --cv-font:        'Courier New', Courier, monospace;
+  --cv-nav-height:  48px;
+}
+
+/* ── 2. Page background & base typography ────────────────────────── */
+html, body {
+  background-color: var(--cv-page-bg) !important;
+  font-family:      var(--cv-font) !important;
+  color:            var(--cv-text);
+  font-size:        16px;
+}
+
+/* ── 3. Navbar — dark navy ───────────────────────────────────────── */
+.cv-navbar {
+  background-color: var(--cv-navy) !important;
+  border-bottom:    none;
+  height:           var(--cv-nav-height);
+  padding:          0 2rem;
+  display:          flex;
+  align-items:      center;
+  justify-content:  space-between;
+  position:         fixed;
+  top: 0; left: 0; right: 0;
+  z-index:          1000;
+}
+
+.cv-navbar__brand {
+  font-family:     var(--cv-font);
+  font-size:       1rem;
+  font-weight:     normal;
+  color:           #ffffff !important;
+  text-decoration: none;
+  letter-spacing:  0.03em;
+}
+
+.cv-navbar__links {
+  display:    flex;
+  gap:        2rem;
+  list-style: none;
+  margin:     0;
+  padding:    0;
+}
+
+.cv-navbar__links a {
+  font-family:     var(--cv-font);
+  font-size:       0.875rem;
+  color:           rgba(255,255,255,0.75) !important;
+  text-decoration: none;
+}
+
+.cv-navbar__links a:hover,
+.cv-navbar__links a.active {
+  color:           #ffffff !important;
+  text-decoration: underline;
+}
+
+/* ── 4. Page wrapper ─────────────────────────────────────────────── */
+.cv-page {
+  padding-top:    calc(var(--cv-nav-height) + 40px);
+  padding-bottom: 60px;
+  min-height:     100vh;
+}
+
+/* ── 5. Upload screen ────────────────────────────────────────────── */
+.cv-upload-wrapper {
+  max-width:  580px;
+  margin:     0 auto;
+}
+
+.cv-upload-heading {
+  text-align:    center;
+  font-size:     1.1rem;
+  font-weight:   normal;
+  margin-bottom: 1.25rem;
+  color:         var(--cv-text);
+  letter-spacing: 0.01em;
+}
+
+.cv-drop-zone {
+  position:        relative;
+  display:         flex;
+  flex-direction:  column;
+  align-items:     center;
+  justify-content: center;
+  min-height:      220px;
+  border:          1.5px dashed var(--cv-blue);
+  background:      #ffffff;
+  padding:         2.5rem 2rem;
+  cursor:          pointer;
+  border-radius:   2px;
+}
+
+.cv-drop-zone.drag-over {
+  background: var(--cv-blue-light);
+}
+
+.cv-drop-zone__input {
+  position: absolute;
+  inset:    0;
+  opacity:  0;
+  cursor:   pointer;
+  width:    100%;
+  height:   100%;
+}
+
+.cv-drop-zone__label-primary {
+  font-size:   0.92rem;
+  margin:      0 0 0.45rem 0;
+  line-height: 1.5;
+  color:       var(--cv-text);
+}
+
+.cv-drop-zone__label-secondary {
+  font-size:   0.80rem;
+  color:       var(--cv-muted);
+  margin:      0 0 0.3rem 0;
+  line-height: 1.6;
+}
+
+.cv-drop-zone__hint {
+  font-size: 0.75rem;
+  color:     var(--cv-muted);
+  margin:    0;
+}
+
+.cv-upload-btn-row {
+  margin-top: 1.75rem;
+}
+
+.cv-file-name {
+  font-size:     0.78rem;
+  color:         var(--cv-muted);
+  margin-top:    0.5rem;
+  margin-bottom: 0;
+}
+
+/* ── 6. Buttons ──────────────────────────────────────────────────── */
+.cv-btn {
+  font-family:   var(--cv-font);
+  font-size:     0.875rem;
+  background:    #ffffff;
+  border:        1.5px solid var(--cv-navy);
+  border-radius: 0;
+  padding:       0.45rem 2rem;
+  color:         var(--cv-navy);
+  cursor:        pointer;
+  text-decoration: none;
+  display:       inline-block;
+  transition:    background 0.15s, color 0.15s;
+}
+
+.cv-btn:hover {
+  background: var(--cv-navy);
+  color:      #ffffff;
+}
+
+/* ── 7. Results screen ───────────────────────────────────────────── */
+.cv-results-wrapper {
+  max-width:  860px;
+  margin:     0 auto;
+}
+
+.cv-panels {
+  display: flex;
+  gap:     1.25rem;
+  margin-bottom: 1rem;
+}
+
+.cv-panel {
+  flex: 1;
+  min-width: 0;
+}
+
+.cv-panel-label {
+  font-size:     0.78rem;
+  color:         var(--cv-muted);
+  margin-bottom: 0.35rem;
+  font-family:   var(--cv-font);
+}
+
+.cv-image-box {
+  border:       1px solid var(--cv-border);
+  background:   #ffffff;
+  width:        100%;
+  aspect-ratio: 4 / 3;
+  overflow:     hidden;
+  position:     relative;
+  display:      flex;
+  align-items:  center;
+  justify-content: center;
+}
+
+.cv-image-box img {
+  width:      100%;
+  height:     100%;
+  object-fit: cover;
+  display:    block;
+}
+
+.cv-img-placeholder {
+  width:    100%;
+  height:   100%;
+  position: relative;
+  display:  flex;
+  align-items:     center;
+  justify-content: center;
+}
+
+.cv-img-placeholder::before,
+.cv-img-placeholder::after {
+  content:          '';
+  position:         absolute;
+  width:            141%;
+  height:           1px;
+  background:       var(--cv-border);
+  top:  50%;
+  left: -20%;
+  transform-origin: center;
+}
+.cv-img-placeholder::before { transform: rotate(45deg);  }
+.cv-img-placeholder::after  { transform: rotate(-45deg); }
+
+.cv-img-placeholder__caption {
+  position:   relative;
+  font-size:  0.8rem;
+  color:      var(--cv-muted);
+  z-index:    1;
+  background: #ffffff;
+  padding:    0 0.4rem;
+}
+
+.cv-heatmap-label {
+  position:  absolute;
+  bottom:    0.6rem;
+  right:     0.75rem;
+  font-size: 0.75rem;
+  color:     var(--cv-muted);
+}
+
+/* ── 8. Stat cards ───────────────────────────────────────────────── */
+.cv-stats {
+  display: flex;
+  gap:     0.75rem;
+  margin-bottom: 1.5rem;
+}
+
+.cv-stat-col {
+  flex: 1;
+  min-width: 0;
+}
+
+.cv-stat-col__header {
+  font-size:     0.75rem;
+  color:         var(--cv-muted);
+  margin-bottom: 0.3rem;
+}
+
+.cv-stat-card {
+  border:     1px solid var(--cv-border);
+  padding:    0.75rem 1rem;
+  background: #ffffff;
+}
+
+.cv-stat-card__subtitle {
+  font-size:     0.7rem;
+  color:         #94a3b8;
+  margin-bottom: 0.5rem;
+}
+
+.cv-stat-card__value {
+  font-size:   1.6rem;
+  font-weight: normal;
+  line-height: 1;
+  color:       var(--cv-text);
+}
+
+.cv-stat-card__value--model {
+  font-size: 1.1rem;
+}
+
+.cv-results-btn-row {
+  margin-top: 0.5rem;
+}
+
+/* ── 9. Error banner ─────────────────────────────────────────────── */
+.cv-error {
+  border:        1px solid #dc2626;
+  padding:       0.6rem 1rem;
+  margin-bottom: 1rem;
+  font-size:     0.8rem;
+  color:         #dc2626;
+  background:    #fff5f5;
+}
+
+/* ── 10. Preview strip ───────────────────────────────────────────── */
+.cv-preview-strip {
+  display:    flex;
+  flex-wrap:  wrap;
+  gap:        0.5rem;
+  margin-top: 1rem;
+}
+
+.cv-preview-strip img {
+  width:      80px;
+  height:     60px;
+  object-fit: cover;
+  border:     1px solid var(--cv-border);
+}

@@ -1,0 +1,100 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Upload – CrowdVision{% endblock %}
+{% block nav_upload %}active{% endblock %}
+
+{% block content %}
+<div class="cv-upload-wrapper">
+
+  {% if error %}
+    <div class="cv-error">{{ error }}</div>
+  {% endif %}
+
+  <h1 class="cv-upload-heading">Upload an image or video</h1>
+
+  <form method="POST" enctype="multipart/form-data" id="cv-upload-form">
+    {% csrf_token %}
+
+    <div class="cv-drop-zone" id="cvDropZone">
+      <input
+        type="file"
+        name="file_data"
+        id="cvFileInput"
+        class="cv-drop-zone__input"
+        accept=".jpg,.jpeg,.png,.mp4"
+      >
+      <p class="cv-drop-zone__label-primary">[ drag &amp; drop here ]</p>
+      <p class="cv-drop-zone__label-secondary">or click to browse files</p>
+      <p class="cv-drop-zone__hint">jpg / png / mp4 supported</p>
+    </div>
+
+    <div class="cv-preview-strip" id="cvPreviewStrip"></div>
+    <p id="cvFileName" class="cv-file-name"></p>
+
+    <div class="text-center cv-upload-btn-row">
+      <button type="submit" class="cv-btn">Analyse crowd</button>
+    </div>
+  </form>
+
+</div>
+{% endblock %}
+
+
+{% block extra_js %}
+<script>
+(function () {
+  const zone  = document.getElementById('cvDropZone');
+  const input = document.getElementById('cvFileInput');
+  const strip = document.getElementById('cvPreviewStrip');
+  const label = document.getElementById('cvFileName');
+
+  ['dragenter', 'dragover'].forEach(ev =>
+    zone.addEventListener(ev, e => { e.preventDefault(); zone.classList.add('drag-over'); })
+  );
+  ['dragleave', 'dragend', 'drop'].forEach(ev =>
+    zone.addEventListener(ev, () => zone.classList.remove('drag-over'))
+  );
+
+  zone.addEventListener('drop', e => {
+    e.preventDefault();
+    const dt = new DataTransfer();
+    [...e.dataTransfer.files].forEach(f => dt.items.add(f));
+    input.files = dt.files;
+    showPreviews(input.files);
+  });
+
+  input.addEventListener('change', () => showPreviews(input.files));
+
+  function showPreviews(files) {
+    strip.innerHTML = '';
+    label.textContent = '';
+    if (!files || files.length === 0) return;
+
+    label.textContent = files.length === 1
+      ? 'Selected: ' + files[0].name
+      : files.length + ' files selected';
+
+    [...files].forEach(file => {
+      if (file.type.startsWith('image/')) {
+        const reader = new FileReader();
+        reader.onload = e => {
+          const img = document.createElement('img');
+          img.src = e.target.result;
+          img.alt = file.name;
+          strip.appendChild(img);
+        };
+        reader.readAsDataURL(file);
+      } else {
+        const div = document.createElement('div');
+        div.style.cssText =
+          'width:80px;height:60px;border:1px solid #222;display:flex;' +
+          'align-items:center;justify-content:center;font-size:1.5rem;color:#666;';
+        div.innerHTML = '<i class="bi bi-film"></i>';
+        strip.appendChild(div);
+      }
+    });
+  }
+})();
+</script>
+{% endblock %}

@@ -1,0 +1,99 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Results – CrowdVision{% endblock %}
+{% block nav_results %}active{% endblock %}
+
+{% block content %}
+<div class="cv-results-wrapper">
+
+  <!-- Image panels -->
+  <div class="cv-panels">
+
+    <!-- Left: input image -->
+    <div class="cv-panel">
+      <p class="cv-panel-label">input image</p>
+      <div class="cv-image-box">
+        {% if input_image_url %}
+          <img src="{{ input_image_url }}" alt="{{ original_filename|default:'Uploaded image' }}">
+        {% else %}
+          <div class="cv-img-placeholder">
+            <span class="cv-img-placeholder__caption">crowd image</span>
+          </div>
+        {% endif %}
+      </div>
+    </div>
+
+    <!-- Right: density map -->
+    <div class="cv-panel">
+      <p class="cv-panel-label">density map</p>
+      <div class="cv-image-box">
+        {% if density_map_url %}
+          <img src="{{ density_map_url }}" alt="Density heatmap">
+        {% else %}
+          <svg viewBox="0 0 320 240"
+               xmlns="http://www.w3.org/2000/svg"
+               style="width:62%; height:auto;"
+               aria-label="heatmap placeholder">
+            <ellipse cx="160" cy="120" rx="120" ry="80"
+                     fill="none" stroke="#6b8cb8" stroke-width="1.2" stroke-dasharray="7 4"/>
+            <ellipse cx="160" cy="120" rx="85"  ry="54"
+                     fill="none" stroke="#6b8cb8" stroke-width="1.2" stroke-dasharray="7 4"/>
+            <ellipse cx="160" cy="120" rx="52"  ry="33"
+                     fill="none" stroke="#6b8cb8" stroke-width="1.2" stroke-dasharray="7 4"/>
+            <ellipse cx="160" cy="120" rx="24"  ry="14"
+                     fill="none" stroke="#6b8cb8" stroke-width="1.2" stroke-dasharray="7 4"/>
+          </svg>
+          <span class="cv-heatmap-label">heatmap overlay</span>
+        {% endif %}
+      </div>
+    </div>
+
+  </div>
+  <!-- /Image panels -->
+
+  <!-- Stat cards -->
+  <div class="cv-stats">
+
+    <div class="cv-stat-col">
+      <p class="cv-stat-col__header">predicted count</p>
+      <div class="cv-stat-card">
+        <div class="cv-stat-card__subtitle">crowd count</div>
+        <div class="cv-stat-card__value">{{ crowd_count|default:"–" }}</div>
+      </div>
+    </div>
+
+    <div class="cv-stat-col">
+      <p class="cv-stat-col__header">MAE</p>
+      <div class="cv-stat-card">
+        <div class="cv-stat-card__subtitle">mean abs. error</div>
+        <div class="cv-stat-card__value">{{ mae|default:"–" }}</div>
+      </div>
+    </div>
+
+    <div class="cv-stat-col">
+      <p class="cv-stat-col__header">MSE</p>
+      <div class="cv-stat-card">
+        <div class="cv-stat-card__subtitle">mean sq. error</div>
+        <div class="cv-stat-card__value">{{ mse|default:"–" }}</div>
+      </div>
+    </div>
+
+    <div class="cv-stat-col">
+      <p class="cv-stat-col__header">model used</p>
+      <div class="cv-stat-card">
+        <div class="cv-stat-card__subtitle">architecture</div>
+        <div class="cv-stat-card__value cv-stat-card__value--model">{{ model_name|default:"–" }}</div>
+      </div>
+    </div>
+
+  </div>
+  <!-- /Stat cards -->
+
+  <!-- Upload another -->
+  <div class="text-center cv-results-btn-row">
+    <a href="{% url 'crowd_app:upload' %}" class="cv-btn">Upload another</a>
+  </div>
+
+</div>
+{% endblock %}
