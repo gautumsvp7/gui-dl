@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 """
 crowd_app/can_inference.py
 --------------------------
