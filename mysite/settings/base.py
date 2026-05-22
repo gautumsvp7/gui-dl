@@ -26,11 +26,8 @@ DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
 
 INSTALLED_APPS = INSTALLED_APPS = [
     'home',
-    'flex',
     'streams',
     'menus',
-    'cam_app',
-    'cam_app2',
     'crowd_app',          # CrowdVision — upload + results screens
 
     'wagtail.contrib.forms',
@@ -152,7 +149,6 @@ STATICFILES_FINDERS = [
 
 STATICFILES_DIRS = [
     os.path.join(PROJECT_DIR, 'static'),
-    os.path.join(BASE_DIR, 'saved_media'),
 ]
 
 # ManifestStaticFilesStorage is recommended in production, to prevent outdated

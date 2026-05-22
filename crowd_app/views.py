@@ -27,37 +27,49 @@ from django.core.files.storage import default_storage
 from django.shortcuts import render, redirect
 from django.views.decorators.http import require_http_methods
 
+from crowd_app.can_inference import load_can_model, predict_crowd
+
 
 # ─────────────────────────────────────────────────────────────────────────────
-# ML model stub — replace this function when the model is ready
+# ML model — loaded once when the module is first imported
 # ─────────────────────────────────────────────────────────────────────────────
+
+# Weights live at  crowdvision/model/best_model.pth
+# BASE_DIR is defined in mysite/settings/base.py and points to the crowdvision/
+# directory, so joining 'model/best_model.pth' gives the correct absolute path.
+_WEIGHTS_PATH = Path(settings.BASE_DIR) / 'model' / 'best_model.pth'
+_MODEL = load_can_model(_WEIGHTS_PATH)
+
 
 def run_model(image_path: Path) -> dict:
     """
-    Stub for the crowd-counting ML model.
+    Run CAN crowd-counting inference on the uploaded image.
 
-    Replace the body of this function with real inference once the model
-    is trained and saved.  The function should:
-      1. Load the image from `image_path`.
-      2. Run the model forward pass to get a density map and crowd count.
-      3. Save the density map as a PNG to MEDIA_ROOT/results/ and return
-         its relative URL under MEDIA_URL.
-      4. Optionally compute MAE / MSE if ground-truth labels are available.
-
-    Returns a dict with keys:
-        crowd_count    (int)
-        mae            (float)
-        mse            (float)
-        model_name     (str)
+    Returns a dict with keys expected by results.html:
+        crowd_count     (int)
+        mae             (None)   — ground-truth not available at inference time
+        mse             (None)   — ground-truth not available at inference time
+        model_name      (str)
         density_map_url (str | None)  — None shows the SVG placeholder
     """
-    # TODO: replace with real model output
+    # Save the density map to media/results/<stem>_<uid>_heatmap.png
+    dm_filename  = f"results/{image_path.stem}_{uuid.uuid4().hex[:8]}_heatmap.png"
+    dm_save_path = Path(settings.MEDIA_ROOT) / dm_filename
+
+    result = predict_crowd(_MODEL, image_path, density_map_save_path=dm_save_path)
+
+    density_map_url = (
+        settings.MEDIA_URL + dm_filename.replace('\\', '/')
+        if result['density_map_saved']
+        else None
+    )
+
     return {
-        'crowd_count':     247,
-        'mae':             6.3,
-        'mse':             9.1,
-        'model_name':      'CSRNet',
-        'density_map_url': None,
+        'crowd_count':     result['crowd_count'],
+        'mae':             None,
+        'mse':             None,
+        'model_name':      'CAN (Context-Aware Network)',
+        'density_map_url': density_map_url,
     }
 
 
@@ -154,7 +166,7 @@ def results_view(request):
     rel_path   = input_image_url.replace(settings.MEDIA_URL, '', 1)
     image_path = Path(settings.MEDIA_ROOT) / rel_path
 
-    # Run the model (stub until real model is integrated)
+    # Run CAN inference — returns crowd_count, density_map_url, model_name
     predictions = run_model(image_path)
 
     context = {

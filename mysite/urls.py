@@ -6,27 +6,12 @@ from wagtail.admin import urls as wagtailadmin_urls
 from wagtail.core import urls as wagtail_urls
 from wagtail.documents import urls as wagtaildocs_urls
 
-from cam_app import views, camera
-from cam_app2 import views as v2
-from django.http import StreamingHttpResponse
-from django.conf import settings
-from django.conf.urls.static import static
-from django.views.static import serve
-
-
 urlpatterns = [
 
     path('django-admin/', admin.site.urls),
 
     path('admin/', include(wagtailadmin_urls)),
     path('documents/', include(wagtaildocs_urls)),
-
-    # ── Legacy cam_app routes kept from sample project ──────────────
-    path('scanner_video/', views.ScannerVideoView.as_view(), name='scanner_video'),
-    path('img/', v2.ImageView.as_view(), name='img'),
-    path('no_video/', views.NoVideoView.as_view(), name='no_video'),
-    path('camera_feed/', lambda r: StreamingHttpResponse(camera.generate_frames(camera.VideoCamera()),
-                                                     content_type='multipart/x-mixed-replace; boundary=frame;')),
 
     # ── CrowdVision app ─────────────────────────────────────────────
     # namespace='crowd_app' lets templates use {% url 'crowd_app:upload' %}

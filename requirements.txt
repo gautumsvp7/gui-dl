@@ -4,3 +4,7 @@ django-extensions>=3.2,<4
 numpy
 opencv-python
 matplotlib
+torch>=2.0
+torchvision>=0.15
+Pillow>=9.0
+scipy
