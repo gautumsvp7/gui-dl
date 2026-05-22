@@ -13,21 +13,17 @@ Usage
 
     # Call per request
     result = predict_crowd(model, image_path, save_density_map_to)
-    # result = {'crowd_count': int, 'density_map_path': str | None}
+    # result = {'crowd_count': int, 'density_map_saved': bool}
 
-Architecture
+Architecture (v2 — matches can_checkpoints_A_v2/best_model.pth)
 ------------
   Frontend : VGG16 [:23] — conv1 through conv4_3, 512 ch, spatial stride 8
-  Context  : Difference-based sigmoid attention (4 pooling scales)
-  Backend  : 6 dilated conv layers (dilation=2) with BatchNorm
-             [512→512→512→512→256→128→64]
+  Context  : Difference-based sigmoid attention (scales/bottleneck/weight_net)
+  Backend  : 6 dilated conv layers (dilation=2) WITH BatchNorm
+             [512→512, 512→512, 512→512, 512→256, 256→128, 128→64]
   Output   : 1×1 conv → density map (sum ≈ crowd count)
-
-This matches the notebook CAN_CrowdCounting_25526979_v2.ipynb exactly so that
-checkpoints saved during training load without any key mismatches.
 """
 
-import os
 from pathlib import Path
 
 import numpy as np
@@ -42,11 +38,16 @@ import matplotlib.pyplot as plt
 
 
 # ─────────────────────────────────────────────────────────────────────────────
-# 1. Model definition  (must be identical to the training notebook)
+# 1. Model definition  (must be identical to the v2 training notebook)
 # ─────────────────────────────────────────────────────────────────────────────
 
 class ContextualModule(nn.Module):
-    """Difference-based sigmoid attention across 4 pooling scales."""
+    """
+    Difference-based sigmoid attention across 4 pooling scales.
+    Each scale computes sigmoid(weight_net(original - scaled)) as its
+    attention weight.  The weighted average is concatenated with the
+    original features and compressed via a 1024→512 bottleneck conv.
+    """
 
     def __init__(self, features=512, out_features=512, sizes=(1, 2, 3, 6)):
         super().__init__()
@@ -77,16 +78,17 @@ class ContextualModule(nn.Module):
         weights = [self._make_weight(feats, s) for s in multi_scales]
         weight_sum = sum(weights)
         weighted_avg = sum(s * wt for s, wt in zip(multi_scales, weights)) / weight_sum
-        combined = torch.cat([weighted_avg, feats], dim=1)
-        return self.relu(self.bottleneck(combined))
+        combined = torch.cat([weighted_avg, feats], dim=1)   # (B, 1024, H, W)
+        return self.relu(self.bottleneck(combined))           # (B,  512, H, W)
 
 
 class CAN(nn.Module):
-    """Context-Aware Network — matches notebook v2 training architecture."""
+    """Context-Aware Network — v2 architecture (512 ch, 6-layer BN backend)."""
 
     def __init__(self):
         super().__init__()
         vgg = models.vgg16(weights=None)   # weights loaded from checkpoint
+        # [:23] = conv1 through conv4_3, before pool4 → 512 ch at H/8
         self.frontend = nn.Sequential(*list(vgg.features.children())[:23])
         self.context  = ContextualModule(512, 512)
 
@@ -149,7 +151,7 @@ _DEVICE = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
 def load_can_model(weights_path: str | Path) -> CAN:
     """
-    Load a CAN model from a checkpoint saved by the training notebook.
+    Load a v2 CAN model from a checkpoint saved by the training notebook.
 
     Parameters
     ----------
@@ -198,8 +200,8 @@ def predict_crowd(
 
     Parameters
     ----------
-    model               : loaded CAN instance (from load_can_model)
-    image_path          : absolute path to the input image
+    model                 : loaded CAN instance (from load_can_model)
+    image_path            : absolute path to the input image
     density_map_save_path : if given, the density map PNG is saved here
 
     Returns
