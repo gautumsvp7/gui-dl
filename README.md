@@ -81,9 +81,4 @@ density_map_url = settings.MEDIA_URL + heatmap_filename
 
 ---
 
-## Team
-| Name | Student ID |
-|------|-----------|
-| Dongyeon Kim | 14490585 |
-| Gautum Vaisiam Parambil | 25526979 |
-| Manaswini Doma | 25517970 |
+
