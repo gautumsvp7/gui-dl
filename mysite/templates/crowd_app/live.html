@@ -1,0 +1,186 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Live View – CrowdVision{% endblock %}
+
+{% block content %}
+<div class="cv-results-wrapper">
+
+  <!-- Permission error banner (hidden until needed) -->
+  <div class="cv-error" id="cvPermissionError" style="display:none;">
+    Camera access was denied.
+    Click the camera/lock icon in your browser's address bar, allow the camera,
+    then <a href="" style="color:#dc2626;">reload this page</a>.
+  </div>
+
+  <!-- Image panels -->
+  <div class="cv-panels">
+
+    <!-- Left: live webcam -->
+    <div class="cv-panel">
+      <p class="cv-panel-label">webcam feed</p>
+      <div class="cv-image-box">
+        <video id="cvLiveVideo" autoplay playsinline muted
+               style="width:100%;height:100%;object-fit:cover;display:block;"></video>
+        <canvas id="cvLiveCanvas" style="display:none;"></canvas>
+      </div>
+    </div>
+
+    <!-- Right: live density map -->
+    <div class="cv-panel">
+      <p class="cv-panel-label">density map</p>
+      <div class="cv-image-box" id="cvHeatmapBox">
+        <!-- Placeholder shown until the first inference returns -->
+        <svg id="cvHeatmapPlaceholder" viewBox="0 0 320 240"
+             xmlns="http://www.w3.org/2000/svg"
+             style="width:62%;height:auto;"
+             aria-label="heatmap placeholder">
+          <ellipse cx="160" cy="120" rx="120" ry="80"
+                   fill="none" stroke="#6b8cb8" stroke-width="1.2" stroke-dasharray="7 4"/>
+          <ellipse cx="160" cy="120" rx="85"  ry="54"
+                   fill="none" stroke="#6b8cb8" stroke-width="1.2" stroke-dasharray="7 4"/>
+          <ellipse cx="160" cy="120" rx="52"  ry="33"
+                   fill="none" stroke="#6b8cb8" stroke-width="1.2" stroke-dasharray="7 4"/>
+          <ellipse cx="160" cy="120" rx="24"  ry="14"
+                   fill="none" stroke="#6b8cb8" stroke-width="1.2" stroke-dasharray="7 4"/>
+        </svg>
+        <img id="cvHeatmapImg" src="" alt="Live density heatmap"
+             style="display:none;width:100%;height:100%;object-fit:cover;">
+      </div>
+    </div>
+
+  </div>
+  <!-- /Image panels -->
+
+  <!-- Stat cards -->
+  <div class="cv-stats">
+
+    <div class="cv-stat-col">
+      <p class="cv-stat-col__header">predicted count</p>
+      <div class="cv-stat-card">
+        <div class="cv-stat-card__subtitle">crowd count</div>
+        <div class="cv-stat-card__value" id="cvLiveCount">—</div>
+      </div>
+    </div>
+
+    <div class="cv-stat-col">
+      <p class="cv-stat-col__header">status</p>
+      <div class="cv-stat-card">
+        <div class="cv-stat-card__subtitle">inference status</div>
+        <div class="cv-stat-card__value cv-stat-card__value--model"
+             id="cvLiveStatus" style="color:var(--cv-muted);">starting camera…</div>
+      </div>
+    </div>
+
+    <div class="cv-stat-col">
+      <p class="cv-stat-col__header">model used</p>
+      <div class="cv-stat-card">
+        <div class="cv-stat-card__subtitle">architecture</div>
+        <div class="cv-stat-card__value cv-stat-card__value--model">CAN</div>
+      </div>
+    </div>
+
+  </div>
+  <!-- /Stat cards -->
+
+  <div class="text-center cv-results-btn-row">
+    <a href="{% url 'crowd_app:upload' %}" class="cv-btn">← back to upload</a>
+  </div>
+
+</div>
+{% endblock %}
+
+
+{% block extra_js %}
+<script>
+(function () {
+  var video       = document.getElementById('cvLiveVideo');
+  var canvas      = document.getElementById('cvLiveCanvas');
+  var countEl     = document.getElementById('cvLiveCount');
+  var statusEl    = document.getElementById('cvLiveStatus');
+  var heatmapImg  = document.getElementById('cvHeatmapImg');
+  var placeholder = document.getElementById('cvHeatmapPlaceholder');
+  var permError   = document.getElementById('cvPermissionError');
+
+  var csrfToken = '{{ csrf_token }}';
+  var inferUrl  = '{% url "crowd_app:live_infer" %}';
+
+  var stream     = null;
+  var inferTimer = null;
+  var running    = false;
+
+  // ── 1. Request webcam ────────────────────────────────────────────
+  navigator.mediaDevices.getUserMedia({ video: true, audio: false })
+    .then(function (s) {
+      stream = s;
+      video.srcObject = s;
+      video.play();
+      setStatus('running', '#16a34a');
+      running = true;
+      scheduleInfer();
+    })
+    .catch(function (err) {
+      // NotAllowedError → user blocked the camera
+      if (err.name === 'NotAllowedError' || err.name === 'PermissionDeniedError') {
+        permError.style.display = 'block';
+        setStatus('permission denied', '#dc2626');
+      } else {
+        setStatus('camera error: ' + err.message, '#dc2626');
+      }
+    });
+
+  // ── 2. Capture frame and POST ────────────────────────────────────
+  function captureAndInfer() {
+    if (!running || video.readyState < 2) { scheduleInfer(); return; }
+
+    var w = video.videoWidth  || 640;
+    var h = video.videoHeight || 480;
+    canvas.width  = w;
+    canvas.height = h;
+    canvas.getContext('2d').drawImage(video, 0, 0, w, h);
+    var dataUrl = canvas.toDataURL('image/jpeg', 0.85);
+
+    fetch(inferUrl, {
+      method:  'POST',
+      headers: { 'Content-Type': 'application/json', 'X-CSRFToken': csrfToken },
+      body:    JSON.stringify({ image: dataUrl }),
+    })
+      .then(function (r) { return r.json(); })
+      .then(function (data) {
+        if (data.crowd_count !== undefined) {
+          countEl.textContent = data.crowd_count;
+          setStatus('running', '#16a34a');
+
+          // Update heatmap — append timestamp to bypass browser cache
+          if (data.density_map_url) {
+            heatmapImg.src          = data.density_map_url + '?t=' + Date.now();
+            heatmapImg.style.display    = 'block';
+            placeholder.style.display  = 'none';
+          }
+        } else {
+          setStatus('inference error', '#dc2626');
+        }
+      })
+      .catch(function () { setStatus('network error', '#dc2626'); })
+      .finally(scheduleInfer);
+  }
+
+  function scheduleInfer() {
+    if (!running) return;
+    inferTimer = setTimeout(captureAndInfer, 2000);
+  }
+
+  function setStatus(text, color) {
+    statusEl.textContent = text;
+    statusEl.style.color = color;
+  }
+
+  // ── 3. Clean up on page leave ────────────────────────────────────
+  window.addEventListener('beforeunload', function () {
+    running = false;
+    clearTimeout(inferTimer);
+    if (stream) stream.getTracks().forEach(function (t) { t.stop(); });
+  });
+})();
+</script>
+{% endblock %}

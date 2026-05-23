@@ -18,12 +18,16 @@ WHY function-based views instead of Wagtail pages?
   living inside the same Wagtail project.
 """
 
+import base64
+import json
 import os
+import tempfile
 import uuid
 from pathlib import Path
 
 from django.conf import settings
 from django.core.files.storage import default_storage
+from django.http import JsonResponse
 from django.shortcuts import render, redirect
 from django.views.decorators.http import require_http_methods
 
@@ -131,6 +135,62 @@ def upload_view(request):
 
     # GET — just show the empty form
     return render(request, 'crowd_app/upload.html', context)
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Screen 3 — Live webcam view
+# ─────────────────────────────────────────────────────────────────────────────
+
+@require_http_methods(["GET"])
+def live_view(request):
+    return render(request, 'crowd_app/live.html')
+
+
+@require_http_methods(["POST"])
+def live_infer_view(request):
+    """
+    Accepts a single webcam frame as a base64 data-URL, runs CAN inference,
+    and returns the crowd count as JSON.  Called every ~2 s by the live view JS.
+    """
+    try:
+        payload = json.loads(request.body)
+    except (json.JSONDecodeError, UnicodeDecodeError):
+        return JsonResponse({'error': 'invalid JSON'}, status=400)
+
+    image_data = payload.get('image', '')
+    if not image_data or ',' not in image_data:
+        return JsonResponse({'error': 'no image'}, status=400)
+
+    _, encoded = image_data.split(',', 1)
+    try:
+        img_bytes = base64.b64decode(encoded)
+    except Exception:
+        return JsonResponse({'error': 'bad base64'}, status=400)
+
+    # Write to a temp file — predict_crowd expects a file path
+    tmp_fd, tmp_path_str = tempfile.mkstemp(suffix='.jpg')
+    tmp_path = Path(tmp_path_str)
+    try:
+        with os.fdopen(tmp_fd, 'wb') as f:
+            f.write(img_bytes)
+
+        # Overwrite a single fixed file so old heatmaps don't pile up on disk.
+        # The JS side appends ?t=<timestamp> to bust the browser cache each poll.
+        dm_save_path = Path(settings.MEDIA_ROOT) / 'results' / 'live_heatmap.png'
+        result = predict_crowd(_MODEL, tmp_path, density_map_save_path=dm_save_path)
+
+        density_map_url = (
+            settings.MEDIA_URL + 'results/live_heatmap.png'
+            if result['density_map_saved'] else None
+        )
+        return JsonResponse({
+            'crowd_count':     result['crowd_count'],
+            'density_map_url': density_map_url,
+        })
+    except Exception as exc:
+        return JsonResponse({'error': str(exc)}, status=500)
+    finally:
+        tmp_path.unlink(missing_ok=True)
 
 
 # ─────────────────────────────────────────────────────────────────────────────

@@ -168,7 +168,7 @@ def load_can_model(weights_path: str | Path) -> CAN:
         return _MODEL_CACHE[weights_path]
 
     model = CAN().to(_DEVICE)
-    ckpt = torch.load(weights_path, map_location=_DEVICE)
+    ckpt = torch.load(weights_path, map_location=_DEVICE, weights_only=False)
 
     # Checkpoints saved by the notebook wrap the state dict under 'model_state_dict'
     state_dict = ckpt.get('model_state_dict', ckpt)

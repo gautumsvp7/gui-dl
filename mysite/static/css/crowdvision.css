@@ -166,6 +166,17 @@ html, body {
   color:      #ffffff;
 }
 
+.cv-btn--secondary {
+  border-color: var(--cv-muted);
+  color:        var(--cv-muted);
+  margin-left:  0.75rem;
+}
+
+.cv-btn--secondary:hover {
+  background: var(--cv-muted);
+  color:      #ffffff;
+}
+
 /* ── 7. Results screen ───────────────────────────────────────────── */
 .cv-results-wrapper {
   max-width:  860px;
