@@ -4,19 +4,28 @@
 {% block title %}Live View – CrowdVision{% endblock %}
 
 {% block content %}
+
+<!-- Capacity setup modal -->
+<div class="cv-modal-overlay active" id="cvCapacityModal">
+  <div class="cv-modal">
+    <p class="cv-modal__title">set venue capacity</p>
+    <p class="cv-modal__sub">enter the maximum number of people allowed in this venue</p>
+    <input type="number" id="cvCapacityInput" class="cv-modal__input"
+           min="1" placeholder="e.g. 500">
+    <button id="cvCapacityConfirm" class="cv-btn">confirm</button>
+  </div>
+</div>
+
 <div class="cv-results-wrapper">
 
-  <!-- Permission error banner (hidden until needed) -->
   <div class="cv-error" id="cvPermissionError" style="display:none;">
     Camera access was denied.
-    Click the camera/lock icon in your browser's address bar, allow the camera,
+    Click the camera icon in your browser address bar, allow access,
     then <a href="" style="color:#dc2626;">reload this page</a>.
   </div>
 
-  <!-- Image panels -->
   <div class="cv-panels">
 
-    <!-- Left: live webcam -->
     <div class="cv-panel">
       <p class="cv-panel-label">webcam feed</p>
       <div class="cv-image-box">
@@ -26,15 +35,12 @@
       </div>
     </div>
 
-    <!-- Right: live density map -->
     <div class="cv-panel">
       <p class="cv-panel-label">density map</p>
       <div class="cv-image-box" id="cvHeatmapBox">
-        <!-- Placeholder shown until the first inference returns -->
         <svg id="cvHeatmapPlaceholder" viewBox="0 0 320 240"
              xmlns="http://www.w3.org/2000/svg"
-             style="width:62%;height:auto;"
-             aria-label="heatmap placeholder">
+             style="width:62%;height:auto;" aria-label="heatmap placeholder">
           <ellipse cx="160" cy="120" rx="120" ry="80"
                    fill="none" stroke="#6b8cb8" stroke-width="1.2" stroke-dasharray="7 4"/>
           <ellipse cx="160" cy="120" rx="85"  ry="54"
@@ -50,15 +56,13 @@
     </div>
 
   </div>
-  <!-- /Image panels -->
 
-  <!-- Stat cards -->
   <div class="cv-stats">
 
     <div class="cv-stat-col">
-      <p class="cv-stat-col__header">predicted count</p>
+      <p class="cv-stat-col__header">live count</p>
       <div class="cv-stat-card">
-        <div class="cv-stat-card__subtitle">crowd count</div>
+        <div class="cv-stat-card__subtitle">people detected</div>
         <div class="cv-stat-card__value" id="cvLiveCount">—</div>
       </div>
     </div>
@@ -68,23 +72,23 @@
       <div class="cv-stat-card">
         <div class="cv-stat-card__subtitle">inference status</div>
         <div class="cv-stat-card__value cv-stat-card__value--model"
-             id="cvLiveStatus" style="color:var(--cv-muted);">starting camera…</div>
+             id="cvLiveStatus" style="color:var(--cv-muted);">starting…</div>
+        <div class="cv-last-updated" id="cvLastUpdated"></div>
       </div>
     </div>
 
     <div class="cv-stat-col">
-      <p class="cv-stat-col__header">model used</p>
+      <p class="cv-stat-col__header">venue capacity</p>
       <div class="cv-stat-card">
-        <div class="cv-stat-card__subtitle">architecture</div>
-        <div class="cv-stat-card__value cv-stat-card__value--model">CAN</div>
+        <div class="cv-stat-card__subtitle" id="cvCapacitySubtitle">not set</div>
+        <div class="cv-stat-card__value" id="cvCapacityValue">—</div>
       </div>
     </div>
 
   </div>
-  <!-- /Stat cards -->
 
   <div class="text-center cv-results-btn-row">
-    <a href="{% url 'crowd_app:upload' %}" class="cv-btn">← back to upload</a>
+    <button id="cvChangeCapacity" class="cv-btn cv-btn--secondary">change capacity</button>
   </div>
 
 </div>
@@ -94,22 +98,94 @@
 {% block extra_js %}
 <script>
 (function () {
-  var video       = document.getElementById('cvLiveVideo');
-  var canvas      = document.getElementById('cvLiveCanvas');
-  var countEl     = document.getElementById('cvLiveCount');
-  var statusEl    = document.getElementById('cvLiveStatus');
-  var heatmapImg  = document.getElementById('cvHeatmapImg');
-  var placeholder = document.getElementById('cvHeatmapPlaceholder');
-  var permError   = document.getElementById('cvPermissionError');
+  var video         = document.getElementById('cvLiveVideo');
+  var canvas        = document.getElementById('cvLiveCanvas');
+  var countEl       = document.getElementById('cvLiveCount');
+  var statusEl      = document.getElementById('cvLiveStatus');
+  var lastUpdatedEl = document.getElementById('cvLastUpdated');
+  var heatmapImg    = document.getElementById('cvHeatmapImg');
+  var placeholder   = document.getElementById('cvHeatmapPlaceholder');
+  var permError     = document.getElementById('cvPermissionError');
+  var capacityVal   = document.getElementById('cvCapacityValue');
+  var capacitySub   = document.getElementById('cvCapacitySubtitle');
+
+  var modal          = document.getElementById('cvCapacityModal');
+  var capacityInput  = document.getElementById('cvCapacityInput');
+  var confirmBtn     = document.getElementById('cvCapacityConfirm');
+  var changeBtn      = document.getElementById('cvChangeCapacity');
 
   var csrfToken = '{{ csrf_token }}';
   var inferUrl  = '{% url "crowd_app:live_infer" %}';
 
-  var stream     = null;
-  var inferTimer = null;
-  var running    = false;
+  var stream          = null;
+  var inferTimer      = null;
+  var staleTimer      = null;
+  var running         = false;
+  var capacity        = null;
+  var currentCount    = 0;
+  var lastSuccessTime = null;
 
-  // ── 1. Request webcam ────────────────────────────────────────────
+  // capacity modal
+  function openModal() {
+    modal.classList.add('active');
+    capacityInput.focus();
+  }
+
+  function closeModal() {
+    var val = parseInt(capacityInput.value, 10);
+    if (!val || val < 1) return;
+    capacity = val;
+    modal.classList.remove('active');
+    updateCapacityCard();
+  }
+
+  confirmBtn.addEventListener('click', closeModal);
+  capacityInput.addEventListener('keydown', function (e) {
+    if (e.key === 'Enter') closeModal();
+  });
+  changeBtn.addEventListener('click', function () {
+    capacityInput.value = capacity || '';
+    openModal();
+  });
+
+  function updateCapacityCard() {
+    if (!capacity) {
+      capacityVal.textContent = '—';
+      capacityVal.className = 'cv-stat-card__value';
+      capacitySub.textContent = 'not set';
+      return;
+    }
+    var pct = Math.round((currentCount / capacity) * 100);
+    capacityVal.textContent = pct + '%';
+    capacitySub.textContent = currentCount + ' / ' + capacity + ' people';
+
+    capacityVal.className = 'cv-stat-card__value';
+    if (pct >= 90) {
+      capacityVal.classList.add('cv-capacity--danger');
+    } else if (pct >= 70) {
+      capacityVal.classList.add('cv-capacity--warn');
+    } else {
+      capacityVal.classList.add('cv-capacity--ok');
+    }
+  }
+
+  // stale feed detection — warn if no successful inference in 6s
+  function startStaleCheck() {
+    staleTimer = setInterval(function () {
+      if (!lastSuccessTime) return;
+      var age = Math.round((Date.now() - lastSuccessTime) / 1000);
+      if (age >= 6) {
+        setStatus('feed stalled (' + age + 's ago)', '#dc2626');
+      }
+    }, 1000);
+  }
+
+  function updateTimestamp() {
+    lastSuccessTime = Date.now();
+    lastUpdatedEl.textContent = 'updated ' + new Date().toLocaleTimeString();
+  }
+
+  // webcam
   navigator.mediaDevices.getUserMedia({ video: true, audio: false })
     .then(function (s) {
       stream = s;
@@ -117,10 +193,11 @@
       video.play();
       setStatus('running', '#16a34a');
       running = true;
+      updateTimestamp();
       scheduleInfer();
+      startStaleCheck();
     })
     .catch(function (err) {
-      // NotAllowedError → user blocked the camera
       if (err.name === 'NotAllowedError' || err.name === 'PermissionDeniedError') {
         permError.style.display = 'block';
         setStatus('permission denied', '#dc2626');
@@ -129,7 +206,7 @@
       }
     });
 
-  // ── 2. Capture frame and POST ────────────────────────────────────
+  // capture and send frame
   function captureAndInfer() {
     if (!running || video.readyState < 2) { scheduleInfer(); return; }
 
@@ -148,13 +225,14 @@
       .then(function (r) { return r.json(); })
       .then(function (data) {
         if (data.crowd_count !== undefined) {
-          countEl.textContent = data.crowd_count;
+          currentCount = data.crowd_count;
+          countEl.textContent = currentCount;
+          updateTimestamp();
+          updateCapacityCard();
           setStatus('running', '#16a34a');
-
-          // Update heatmap — append timestamp to bypass browser cache
           if (data.density_map_url) {
-            heatmapImg.src          = data.density_map_url + '?t=' + Date.now();
-            heatmapImg.style.display    = 'block';
+            heatmapImg.src         = data.density_map_url + '?t=' + Date.now();
+            heatmapImg.style.display   = 'block';
             placeholder.style.display  = 'none';
           }
         } else {
@@ -175,10 +253,10 @@
     statusEl.style.color = color;
   }
 
-  // ── 3. Clean up on page leave ────────────────────────────────────
   window.addEventListener('beforeunload', function () {
     running = false;
     clearTimeout(inferTimer);
+    clearInterval(staleTimer);
     if (stream) stream.getTracks().forEach(function (t) { t.stop(); });
   });
 })();

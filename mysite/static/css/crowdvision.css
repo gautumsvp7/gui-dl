@@ -1,6 +1,4 @@
-/* crowdvision.css — blue & white theme */
-
-/* ── 1. Global tokens ────────────────────────────────────────────── */
+/* crowdvision.css */
 :root {
   --cv-bg:          #ffffff;
   --cv-page-bg:     #f0f4ff;
@@ -14,7 +12,7 @@
   --cv-nav-height:  48px;
 }
 
-/* ── 2. Page background & base typography ────────────────────────── */
+/* base */
 html, body {
   background-color: var(--cv-page-bg) !important;
   font-family:      var(--cv-font) !important;
@@ -22,7 +20,7 @@ html, body {
   font-size:        16px;
 }
 
-/* ── 3. Navbar — dark navy ───────────────────────────────────────── */
+/* navbar */
 .cv-navbar {
   background-color: var(--cv-navy) !important;
   border-bottom:    none;
@@ -66,14 +64,14 @@ html, body {
   text-decoration: underline;
 }
 
-/* ── 4. Page wrapper ─────────────────────────────────────────────── */
+/* layout */
 .cv-page {
   padding-top:    calc(var(--cv-nav-height) + 40px);
   padding-bottom: 60px;
   min-height:     100vh;
 }
 
-/* ── 5. Upload screen ────────────────────────────────────────────── */
+/* upload page */
 .cv-upload-wrapper {
   max-width:  580px;
   margin:     0 auto;
@@ -146,7 +144,7 @@ html, body {
   margin-bottom: 0;
 }
 
-/* ── 6. Buttons ──────────────────────────────────────────────────── */
+/* buttons */
 .cv-btn {
   font-family:   var(--cv-font);
   font-size:     0.875rem;
@@ -177,7 +175,7 @@ html, body {
   color:      #ffffff;
 }
 
-/* ── 7. Results screen ───────────────────────────────────────────── */
+/* results page */
 .cv-results-wrapper {
   max-width:  860px;
   margin:     0 auto;
@@ -260,7 +258,7 @@ html, body {
   color:     var(--cv-muted);
 }
 
-/* ── 8. Stat cards ───────────────────────────────────────────────── */
+/* stat cards */
 .cv-stats {
   display: flex;
   gap:     0.75rem;
@@ -305,7 +303,7 @@ html, body {
   margin-top: 0.5rem;
 }
 
-/* ── 9. Error banner ─────────────────────────────────────────────── */
+/* error */
 .cv-error {
   border:        1px solid #dc2626;
   padding:       0.6rem 1rem;
@@ -315,7 +313,7 @@ html, body {
   background:    #fff5f5;
 }
 
-/* ── 10. Preview strip ───────────────────────────────────────────── */
+/* preview strip */
 .cv-preview-strip {
   display:    flex;
   flex-wrap:  wrap;
@@ -328,4 +326,66 @@ html, body {
   height:     60px;
   object-fit: cover;
   border:     1px solid var(--cv-border);
+}
+
+/* capacity modal */
+.cv-modal-overlay {
+  display:         none;
+  position:        fixed;
+  inset:           0;
+  background:      rgba(15, 39, 68, 0.6);
+  z-index:         2000;
+  align-items:     center;
+  justify-content: center;
+}
+
+.cv-modal-overlay.active {
+  display: flex;
+}
+
+.cv-modal {
+  background:  #ffffff;
+  border:      1.5px solid var(--cv-navy);
+  padding:     2rem 2.5rem;
+  max-width:   380px;
+  width:       90%;
+}
+
+.cv-modal__title {
+  font-size:     1rem;
+  color:         var(--cv-text);
+  margin:        0 0 0.4rem 0;
+}
+
+.cv-modal__sub {
+  font-size:     0.78rem;
+  color:         var(--cv-muted);
+  margin:        0 0 1.25rem 0;
+}
+
+.cv-modal__input {
+  font-family:   var(--cv-font);
+  font-size:     1rem;
+  width:         100%;
+  border:        1px solid var(--cv-border);
+  padding:       0.4rem 0.75rem;
+  margin-bottom: 1.25rem;
+  outline:       none;
+  box-sizing:    border-box;
+}
+
+.cv-modal__input:focus {
+  border-color: var(--cv-navy);
+}
+
+/* capacity % color states */
+.cv-capacity--ok     { color: #16a34a; }
+.cv-capacity--warn   { color: #d97706; }
+.cv-capacity--danger { color: #dc2626; }
+
+/* last updated timestamp */
+.cv-last-updated {
+  font-size:  0.7rem;
+  color:      var(--cv-muted);
+  margin-top: 0.3rem;
 }
