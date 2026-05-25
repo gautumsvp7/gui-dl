@@ -32,6 +32,23 @@
     <div class="cv-preview-strip" id="cvPreviewStrip"></div>
     <p id="cvFileName" class="cv-file-name"></p>
 
+    <div class="cv-expected-count-row">
+      <label for="expectedCount" class="cv-expected-count-label">
+        Expected crowd size
+        <span class="cv-expected-count-hint">
+          (≤{{ density_threshold }} → sparse model &nbsp;|&nbsp; >{{ density_threshold }} → dense model)
+        </span>
+      </label>
+      <input
+        type="number"
+        id="expectedCount"
+        name="expected_count"
+        class="cv-expected-count-input"
+        min="0"
+        placeholder="e.g. 300"
+      >
+    </div>
+
     <div class="text-center cv-upload-btn-row">
       <button type="submit" class="cv-btn">Analyse crowd</button>
       <a href="{% url 'crowd_app:live' %}" class="cv-btn cv-btn--secondary">Live view</a>

@@ -102,8 +102,13 @@ _preprocess = transforms.Compose([
 _MODEL_CACHE = {}
 _DEVICE = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
+# Threshold: expected crowd counts at or below this use the Part B (sparse) model;
+# counts above it use the Part A (dense) model.
+DENSITY_THRESHOLD = 200
+
 
 def load_can_model(weights_path):
+    """Load a CAN checkpoint and cache it so it is only read from disk once."""
     weights_path = str(weights_path)
     if weights_path in _MODEL_CACHE:
         return _MODEL_CACHE[weights_path]
@@ -116,6 +121,14 @@ def load_can_model(weights_path):
 
     _MODEL_CACHE[weights_path] = model
     return model
+
+
+def select_model(model_a, model_b, expected_count):
+    """Return the appropriate model and a human-readable label based on expected_count."""
+    if expected_count <= DENSITY_THRESHOLD:
+        return model_b, 'CAN – Part B (sparse crowds, ≤{} expected)'.format(DENSITY_THRESHOLD)
+    else:
+        return model_a, 'CAN – Part A (dense crowds, >{} expected)'.format(DENSITY_THRESHOLD)
 
 
 def _save_density_map(dm_np, save_path):

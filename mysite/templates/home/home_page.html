@@ -14,7 +14,10 @@
   <center><div class="lead">
     <h4>{{ self.banner_subtitle|richtext }}</h4>
     <br>
-    <a href="{% url 'crowd_app:upload' %}" class="btn btn-primary btn-lg">Upload</a>
+    <p style="max-width: 660px; margin: 0 auto 1.5rem auto; font-size: 1.05rem; line-height: 1.7; color: #555; text-align: center;">
+      Crowd incidents at stadiums, transit hubs, and public events are almost always preventable. The problem is that most venues still rely on manual headcounts or basic entry sensors that tell you how many people came in, but nothing about where they are or how dense it's getting. CrowdVision was built to fix that. It uses computer vision to estimate crowd size and generate a live density heatmap from any camera feed or uploaded image, giving you a spatial picture of where people are concentrated so you can act early. No technical setup needed, just point a camera and get a count.
+    </p>
+    <a href="{% url 'crowd_app:upload' %}" class="btn btn-primary btn-lg">Start</a>
     <br><br>
     <img src="{% static 'images/pexels-caleboquendo-34585117.jpg' %}" class="d-block w-100" alt="Banner image">
   </div></center>

@@ -9,7 +9,11 @@
 <div class="cv-modal-overlay active" id="cvCapacityModal">
   <div class="cv-modal">
     <p class="cv-modal__title">set venue capacity</p>
-    <p class="cv-modal__sub">enter the maximum number of people allowed in this venue</p>
+    <p class="cv-modal__sub">
+      Enter the maximum number of people expected at this venue.
+      This sets the occupancy limit and selects the counting model
+      (≤200 → sparse &nbsp;|&nbsp; &gt;200 → dense).
+    </p>
     <input type="number" id="cvCapacityInput" class="cv-modal__input"
            min="1" placeholder="e.g. 500">
     <button id="cvCapacityConfirm" class="cv-btn">confirm</button>
@@ -85,6 +89,14 @@
       </div>
     </div>
 
+    <div class="cv-stat-col">
+      <p class="cv-stat-col__header">model used</p>
+      <div class="cv-stat-card">
+        <div class="cv-stat-card__subtitle">selected by expected count</div>
+        <div class="cv-stat-card__value cv-stat-card__value--model" id="cvModelName">—</div>
+      </div>
+    </div>
+
   </div>
 
   <div class="text-center cv-results-btn-row">
@@ -113,6 +125,7 @@
   var capacityInput  = document.getElementById('cvCapacityInput');
   var confirmBtn     = document.getElementById('cvCapacityConfirm');
   var changeBtn      = document.getElementById('cvChangeCapacity');
+  var modelNameEl    = document.getElementById('cvModelName');
 
   var csrfToken = '{{ csrf_token }}';
   var inferUrl  = '{% url "crowd_app:live_infer" %}';
@@ -121,11 +134,11 @@
   var inferTimer      = null;
   var staleTimer      = null;
   var running         = false;
-  var capacity        = null;
+  var capacity        = null;   // also used as expected_count for model selection
   var currentCount    = 0;
   var lastSuccessTime = null;
 
-  // capacity modal
+  // capacity modal — single value drives both occupancy display and model selection
   function openModal() {
     modal.classList.add('active');
     capacityInput.focus();
@@ -220,7 +233,7 @@
     fetch(inferUrl, {
       method:  'POST',
       headers: { 'Content-Type': 'application/json', 'X-CSRFToken': csrfToken },
-      body:    JSON.stringify({ image: dataUrl }),
+      body:    JSON.stringify({ image: dataUrl, expected_count: capacity || 0 }),
     })
       .then(function (r) { return r.json(); })
       .then(function (data) {
@@ -230,6 +243,9 @@
           updateTimestamp();
           updateCapacityCard();
           setStatus('running', '#16a34a');
+          if (data.model_name) {
+            modelNameEl.textContent = data.model_name;
+          }
           if (data.density_map_url) {
             heatmapImg.src         = data.density_map_url + '?t=' + Date.now();
             heatmapImg.style.display   = 'block';

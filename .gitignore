@@ -15,6 +15,7 @@ env/
 db.sqlite3
 media/
 staticfiles/
+model/.*.pth.*
 
 # OS
 .DS_Store

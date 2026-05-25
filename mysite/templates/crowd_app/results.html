@@ -80,6 +80,14 @@
     </div>
 
     <div class="cv-stat-col">
+      <p class="cv-stat-col__header">expected count</p>
+      <div class="cv-stat-card">
+        <div class="cv-stat-card__subtitle">user input</div>
+        <div class="cv-stat-card__value">{{ expected_count|default:"–" }}</div>
+      </div>
+    </div>
+
+    <div class="cv-stat-col">
       <p class="cv-stat-col__header">model used</p>
       <div class="cv-stat-card">
         <div class="cv-stat-card__subtitle">architecture</div>
