@@ -5,7 +5,6 @@
 
 {% block content %}
 
-<!-- Capacity setup modal -->
 <div class="cv-modal-overlay active" id="cvCapacityModal">
   <div class="cv-modal">
     <p class="cv-modal__title">set venue capacity</p>
@@ -121,11 +120,11 @@
   var capacityVal   = document.getElementById('cvCapacityValue');
   var capacitySub   = document.getElementById('cvCapacitySubtitle');
 
-  var modal          = document.getElementById('cvCapacityModal');
-  var capacityInput  = document.getElementById('cvCapacityInput');
-  var confirmBtn     = document.getElementById('cvCapacityConfirm');
-  var changeBtn      = document.getElementById('cvChangeCapacity');
-  var modelNameEl    = document.getElementById('cvModelName');
+  var modal         = document.getElementById('cvCapacityModal');
+  var capacityInput = document.getElementById('cvCapacityInput');
+  var confirmBtn    = document.getElementById('cvCapacityConfirm');
+  var changeBtn     = document.getElementById('cvChangeCapacity');
+  var modelNameEl   = document.getElementById('cvModelName');
 
   var csrfToken = '{{ csrf_token }}';
   var inferUrl  = '{% url "crowd_app:live_infer" %}';
@@ -134,11 +133,10 @@
   var inferTimer      = null;
   var staleTimer      = null;
   var running         = false;
-  var capacity        = null;   // also used as expected_count for model selection
+  var capacity        = null;
   var currentCount    = 0;
   var lastSuccessTime = null;
 
-  // capacity modal — single value drives both occupancy display and model selection
   function openModal() {
     modal.classList.add('active');
     capacityInput.focus();
@@ -182,7 +180,6 @@
     }
   }
 
-  // stale feed detection — warn if no successful inference in 6s
   function startStaleCheck() {
     staleTimer = setInterval(function () {
       if (!lastSuccessTime) return;
@@ -198,7 +195,6 @@
     lastUpdatedEl.textContent = 'updated ' + new Date().toLocaleTimeString();
   }
 
-  // webcam
   navigator.mediaDevices.getUserMedia({ video: true, audio: false })
     .then(function (s) {
       stream = s;
@@ -219,7 +215,6 @@
       }
     });
 
-  // capture and send frame
   function captureAndInfer() {
     if (!running || video.readyState < 2) { scheduleInfer(); return; }
 
@@ -247,9 +242,9 @@
             modelNameEl.textContent = data.model_name;
           }
           if (data.density_map_url) {
-            heatmapImg.src         = data.density_map_url + '?t=' + Date.now();
-            heatmapImg.style.display   = 'block';
-            placeholder.style.display  = 'none';
+            heatmapImg.src        = data.density_map_url + '?t=' + Date.now();
+            heatmapImg.style.display  = 'block';
+            placeholder.style.display = 'none';
           }
         } else {
           setStatus('inference error', '#dc2626');

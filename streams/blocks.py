@@ -1,22 +1,19 @@
-"""Streamfields are here"""
-
 from wagtail.core import blocks
 from wagtail.images.blocks import ImageChooserBlock
 
-class TitleAndTextBlock(blocks.StructBlock):
-    """Title and text only"""
 
-    title = blocks.CharBlock(required=True, help_text = 'Add your title')
-    text = blocks.TextBlock(required=True, help_text = 'Add additional text')
+class TitleAndTextBlock(blocks.StructBlock):
+    title = blocks.CharBlock(required=True, help_text='Add your title')
+    text = blocks.TextBlock(required=True, help_text='Add additional text')
 
     class Meta:
         template = "streams/title_and_text_block.html"
         icon = "edit"
         label = "Title & Text"
 
+
 class CardBlock(blocks.StructBlock):
-    """Cards with image and text and button(s)"""
-    title = blocks.CharBlock(required=False, help_text = 'Add your title')
+    title = blocks.CharBlock(required=False, help_text='Add your title')
 
     cards = blocks.ListBlock(
         blocks.StructBlock(
@@ -36,20 +33,14 @@ class CardBlock(blocks.StructBlock):
         label = "Cards"
 
 
-
 class RichtextBlock(blocks.RichTextBlock):
-    """Richtext with all features"""
-
     class Meta:
         template = "streams/richtext_block.html"
         icon = "doc-full"
         label = "Full RichText"
 
 
-
 class SimpleRichtextBlock(blocks.RichTextBlock):
-    """Simple Rich Text  with limited features"""
-
     def __init__(self, required=True, help_text=None, editor='default', features=None, **kwargs):
         super().__init__(**kwargs)
         self.features = [
@@ -57,7 +48,6 @@ class SimpleRichtextBlock(blocks.RichTextBlock):
             "italic",
             "link",
         ]
-
 
     class Meta:
         template = "streams/richtext_block.html"

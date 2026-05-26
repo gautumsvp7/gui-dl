@@ -14,7 +14,6 @@ from django.views.decorators.http import require_http_methods
 from crowd_app.can_inference import load_can_model, predict_crowd, select_model, DENSITY_THRESHOLD
 
 
-# Load both models once at startup so inference is fast on every request.
 _MODEL_A = load_can_model(Path(settings.BASE_DIR) / 'model' / 'part_a.pth')
 _MODEL_B = load_can_model(Path(settings.BASE_DIR) / 'model' / 'part_b.pth')
 
@@ -35,10 +34,10 @@ def run_model(image_path, expected_count):
     )
 
     return {
-        'crowd_count':     result['crowd_count'],
-        'mae':             None,
-        'mse':             None,
-        'model_name':      model_label,
+        'crowd_count': result['crowd_count'],
+        'mae': None,
+        'mse': None,
+        'model_name': model_label,
         'density_map_url': density_map_url,
     }
 
@@ -60,7 +59,6 @@ def upload_view(request):
             context['error'] = 'Unsupported file type "{}". Please upload a jpg, png, or mp4.'.format(ext)
             return render(request, 'crowd_app/upload.html', context)
 
-        # Read expected crowd count; default to 0 so Part B is selected when omitted.
         try:
             expected_count = int(request.POST.get('expected_count', 0))
             if expected_count < 0:
@@ -101,9 +99,9 @@ def results_view(request):
     predictions = run_model(image_path, expected_count)
 
     context = {
-        'input_image_url':   input_image_url,
+        'input_image_url': input_image_url,
         'original_filename': original_filename,
-        'expected_count':    expected_count,
+        'expected_count': expected_count,
         **predictions,
     }
 
@@ -113,6 +111,11 @@ def results_view(request):
 @require_http_methods(["GET"])
 def live_view(request):
     return render(request, 'crowd_app/live.html')
+
+
+@require_http_methods(["GET"])
+def about_view(request):
+    return render(request, 'about/about.html')
 
 
 @require_http_methods(["POST"])
@@ -132,7 +135,6 @@ def live_infer_view(request):
     except Exception:
         return JsonResponse({'error': 'bad base64'}, status=400)
 
-    # Read expected_count from the payload to pick the right model.
     try:
         expected_count = int(payload.get('expected_count', 0))
         if expected_count < 0:
@@ -156,8 +158,8 @@ def live_infer_view(request):
             if result['density_map_saved'] else None
         )
         return JsonResponse({
-            'crowd_count':     result['crowd_count'],
-            'model_name':      model_label,
+            'crowd_count': result['crowd_count'],
+            'model_name': model_label,
             'density_map_url': density_map_url,
         })
     except Exception as exc:

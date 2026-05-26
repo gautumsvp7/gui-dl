@@ -1,11 +1,5 @@
-"""
-CAN (Context-Aware Network) inference module.
-Loads a trained checkpoint and runs crowd-count prediction on a single image.
-"""
-
 from pathlib import Path
 
-import numpy as np
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
@@ -17,12 +11,6 @@ import matplotlib.pyplot as plt
 
 
 class ContextualModule(nn.Module):
-    """
-    Multi-scale context aggregation with difference-based sigmoid attention.
-    Each pooling scale's weight is sigmoid(weight_net(original - scaled)).
-    The weighted average is concatenated with the original and bottlenecked.
-    """
-
     def __init__(self, features=512, out_features=512, sizes=(1, 2, 3, 6)):
         super().__init__()
         self.scales = nn.ModuleList(
@@ -56,12 +44,6 @@ class ContextualModule(nn.Module):
 
 
 class CAN(nn.Module):
-    """
-    Context-Aware Network for crowd counting.
-    Frontend: VGG16 conv1-conv4_3 ([:23], 512ch, stride 8)
-    Backend:  6 dilated conv layers with BatchNorm
-    """
-
     def __init__(self):
         super().__init__()
         vgg = models.vgg16(weights=None)
@@ -92,7 +74,7 @@ class CAN(nn.Module):
 
 
 _IMAGENET_MEAN = [0.485, 0.456, 0.406]
-_IMAGENET_STD  = [0.229, 0.224, 0.225]
+_IMAGENET_STD = [0.229, 0.224, 0.225]
 
 _preprocess = transforms.Compose([
     transforms.ToTensor(),
@@ -102,13 +84,10 @@ _preprocess = transforms.Compose([
 _MODEL_CACHE = {}
 _DEVICE = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
-# Threshold: expected crowd counts at or below this use the Part B (sparse) model;
-# counts above it use the Part A (dense) model.
 DENSITY_THRESHOLD = 200
 
 
 def load_can_model(weights_path):
-    """Load a CAN checkpoint and cache it so it is only read from disk once."""
     weights_path = str(weights_path)
     if weights_path in _MODEL_CACHE:
         return _MODEL_CACHE[weights_path]
@@ -124,7 +103,6 @@ def load_can_model(weights_path):
 
 
 def select_model(model_a, model_b, expected_count):
-    """Return the appropriate model and a human-readable label based on expected_count."""
     if expected_count <= DENSITY_THRESHOLD:
         return model_b, 'CAN – Part B (sparse crowds, ≤{} expected)'.format(DENSITY_THRESHOLD)
     else:
@@ -147,7 +125,6 @@ def predict_crowd(model, image_path, density_map_save_path=None):
     image_path = Path(image_path)
 
     img = Image.open(image_path).convert('RGB')
-    # resize to nearest multiple of 8 (required by stride-8 frontend)
     w, h = img.size
     img = img.resize((round(w / 8) * 8, round(h / 8) * 8), Image.BILINEAR)
 
@@ -168,6 +145,6 @@ def predict_crowd(model, image_path, density_map_save_path=None):
             print(f'density map save failed: {exc}')
 
     return {
-        'crowd_count':       crowd_count,
+        'crowd_count': crowd_count,
         'density_map_saved': saved,
     }

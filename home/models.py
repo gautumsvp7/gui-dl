@@ -17,8 +17,6 @@ from streams import blocks
 
 
 class HomePageCarouselImages(Orderable):
-    """Between 1 and 5 images for the home page carousel."""
-
     page = ParentalKey("home.HomePage", related_name="carousel_images")
     carousel_image = models.ForeignKey(
         "wagtailimages.Image",
@@ -32,8 +30,6 @@ class HomePageCarouselImages(Orderable):
 
 
 class HomePage(Page):
-    """Home page model."""
-
     template = "home/home_page.html"
     max_count = 1
 
@@ -48,13 +44,10 @@ class HomePage(Page):
     )
 
     contentCard = StreamField(
-        [
-            ("cards", blocks.CardBlock()),
-        ],
+        [("cards", blocks.CardBlock())],
         null=True,
         blank=True
     )
-
 
     content_panels = Page.content_panels + [
         MultiFieldPanel(
@@ -62,7 +55,6 @@ class HomePage(Page):
                 FieldPanel("banner_title"),
                 FieldPanel("banner_subtitle"),
                 ImageChooserPanel("banner_image"),
-
             ],
             heading="Banner Options",
         ),
@@ -71,14 +63,10 @@ class HomePage(Page):
             heading="Carousel Images",
         ),
         MultiFieldPanel(
-        [
-        StreamFieldPanel("contentCard"),
-        ]
+            [StreamFieldPanel("contentCard")]
         ),
-
     ]
 
     class Meta:
-
         verbose_name = "Home Page"
         verbose_name_plural = "Home Pages"
