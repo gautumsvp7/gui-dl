@@ -50,13 +50,13 @@ def upload_view(request):
         file_obj = request.FILES.get('file_data')
 
         if not file_obj:
-            context['error'] = 'No file was selected. Please choose an image or video.'
+            context['error'] = 'No file was selected. Please choose an image.'
             return render(request, 'crowd_app/upload.html', context)
 
-        ALLOWED_EXTS = {'.jpg', '.jpeg', '.png', '.mp4'}
+        ALLOWED_EXTS = {'.jpg', '.jpeg', '.png'}
         ext = Path(file_obj.name).suffix.lower()
         if ext not in ALLOWED_EXTS:
-            context['error'] = 'Unsupported file type "{}". Please upload a jpg, png, or mp4.'.format(ext)
+            context['error'] = 'Unsupported file type "{}". Please upload a jpg or png.'.format(ext)
             return render(request, 'crowd_app/upload.html', context)
 
         try:

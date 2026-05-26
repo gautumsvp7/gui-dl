@@ -8,16 +8,20 @@
   --cv-border:      #2563eb;
   --cv-text:        #0f2744;
   --cv-muted:       #6b8cb8;
-  --cv-font:        'Courier New', Courier, monospace;
-  --cv-nav-height:  48px;
+  --cv-font:        'Inter', 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+  --cv-nav-height:  54px;
 }
 
 /* base */
+*, *::before, *::after {
+  font-family: var(--cv-font) !important;
+}
+
 html, body {
   background-color: var(--cv-page-bg) !important;
   font-family:      var(--cv-font) !important;
   color:            var(--cv-text);
-  font-size:        16px;
+  font-size:        17px;
 }
 
 /* navbar */
@@ -36,11 +40,11 @@ html, body {
 
 .cv-navbar__brand {
   font-family:     var(--cv-font);
-  font-size:       1rem;
-  font-weight:     normal;
+  font-size:       1.15rem;
+  font-weight:     500;
   color:           #ffffff !important;
   text-decoration: none;
-  letter-spacing:  0.03em;
+  letter-spacing:  0.01em;
 }
 
 .cv-navbar__links {
@@ -53,8 +57,8 @@ html, body {
 
 .cv-navbar__links a {
   font-family:     var(--cv-font);
-  font-size:       0.875rem;
-  color:           rgba(255,255,255,0.75) !important;
+  font-size:       1rem;
+  color:           rgba(255,255,255,0.80) !important;
   text-decoration: none;
 }
 
@@ -79,8 +83,8 @@ html, body {
 
 .cv-upload-heading {
   text-align:    center;
-  font-size:     1.1rem;
-  font-weight:   normal;
+  font-size:     1.3rem;
+  font-weight:   500;
   margin-bottom: 1.25rem;
   color:         var(--cv-text);
   letter-spacing: 0.01em;
@@ -114,21 +118,21 @@ html, body {
 }
 
 .cv-drop-zone__label-primary {
-  font-size:   0.92rem;
+  font-size:   1.05rem;
   margin:      0 0 0.45rem 0;
   line-height: 1.5;
   color:       var(--cv-text);
 }
 
 .cv-drop-zone__label-secondary {
-  font-size:   0.80rem;
+  font-size:   0.95rem;
   color:       var(--cv-muted);
   margin:      0 0 0.3rem 0;
   line-height: 1.6;
 }
 
 .cv-drop-zone__hint {
-  font-size: 0.75rem;
+  font-size: 0.88rem;
   color:     var(--cv-muted);
   margin:    0;
 }
@@ -138,7 +142,7 @@ html, body {
 }
 
 .cv-file-name {
-  font-size:     0.78rem;
+  font-size:     0.9rem;
   color:         var(--cv-muted);
   margin-top:    0.5rem;
   margin-bottom: 0;
@@ -147,7 +151,7 @@ html, body {
 /* buttons */
 .cv-btn {
   font-family:   var(--cv-font);
-  font-size:     0.875rem;
+  font-size:     1rem;
   background:    #ffffff;
   border:        1.5px solid var(--cv-navy);
   border-radius: 0;
@@ -193,7 +197,7 @@ html, body {
 }
 
 .cv-panel-label {
-  font-size:     0.78rem;
+  font-size:     0.92rem;
   color:         var(--cv-muted);
   margin-bottom: 0.35rem;
   font-family:   var(--cv-font);
@@ -254,7 +258,7 @@ html, body {
   position:  absolute;
   bottom:    0.6rem;
   right:     0.75rem;
-  font-size: 0.75rem;
+  font-size: 0.88rem;
   color:     var(--cv-muted);
 }
 
@@ -271,7 +275,7 @@ html, body {
 }
 
 .cv-stat-col__header {
-  font-size:     0.75rem;
+  font-size:     0.88rem;
   color:         var(--cv-muted);
   margin-bottom: 0.3rem;
 }
@@ -283,20 +287,20 @@ html, body {
 }
 
 .cv-stat-card__subtitle {
-  font-size:     0.7rem;
+  font-size:     0.85rem;
   color:         #94a3b8;
   margin-bottom: 0.5rem;
 }
 
 .cv-stat-card__value {
-  font-size:   1.6rem;
-  font-weight: normal;
+  font-size:   1.9rem;
+  font-weight: 500;
   line-height: 1;
   color:       var(--cv-text);
 }
 
 .cv-stat-card__value--model {
-  font-size: 1.1rem;
+  font-size: 1.2rem;
 }
 
 .cv-results-btn-row {
@@ -308,7 +312,7 @@ html, body {
   border:        1px solid #dc2626;
   padding:       0.6rem 1rem;
   margin-bottom: 1rem;
-  font-size:     0.8rem;
+  font-size:     0.92rem;
   color:         #dc2626;
   background:    #fff5f5;
 }
@@ -352,13 +356,13 @@ html, body {
 }
 
 .cv-modal__title {
-  font-size:     1rem;
+  font-size:     1.2rem;
   color:         var(--cv-text);
   margin:        0 0 0.4rem 0;
 }
 
 .cv-modal__sub {
-  font-size:     0.78rem;
+  font-size:     0.95rem;
   color:         var(--cv-muted);
   margin:        0 0 1.25rem 0;
 }
@@ -385,7 +389,7 @@ html, body {
 
 /* last updated timestamp */
 .cv-last-updated {
-  font-size:  0.7rem;
+  font-size:  0.85rem;
   color:      var(--cv-muted);
   margin-top: 0.3rem;
 }
