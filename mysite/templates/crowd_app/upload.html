@@ -67,19 +67,14 @@
   const strip = document.getElementById('cvPreviewStrip');
   const label = document.getElementById('cvFileName');
 
-  ['dragenter', 'dragover'].forEach(ev =>
-    zone.addEventListener(ev, e => { e.preventDefault(); zone.classList.add('drag-over'); })
-  );
-  ['dragleave', 'dragend', 'drop'].forEach(ev =>
-    zone.addEventListener(ev, () => zone.classList.remove('drag-over'))
-  );
+  zone.addEventListener('dragenter', e => { e.preventDefault(); zone.classList.add('drag-over'); });
+  zone.addEventListener('dragover',  e => { e.preventDefault(); zone.classList.add('drag-over'); });
+  zone.addEventListener('dragleave', () => zone.classList.remove('drag-over'));
 
   zone.addEventListener('drop', e => {
     e.preventDefault();
-    const dt = new DataTransfer();
-    [...e.dataTransfer.files].forEach(f => dt.items.add(f));
-    input.files = dt.files;
-    showPreviews(input.files);
+    zone.classList.remove('drag-over');
+    showPreviews(e.dataTransfer.files);
   });
 
   input.addEventListener('change', () => showPreviews(input.files));

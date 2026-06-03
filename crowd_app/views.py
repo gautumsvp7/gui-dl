@@ -1,7 +1,7 @@
 import base64
+import io
 import json
 import os
-import tempfile
 import uuid
 from pathlib import Path
 
@@ -10,39 +10,16 @@ from django.core.files.storage import default_storage
 from django.http import JsonResponse
 from django.shortcuts import render, redirect
 from django.views.decorators.http import require_http_methods
+from PIL import Image
 
 from crowd_app.can_inference import load_can_model, predict_crowd, select_model, DENSITY_THRESHOLD
 
 
-_MODEL_A = load_can_model(Path(settings.BASE_DIR) / 'model' / 'part_a.pth')
-_MODEL_B = load_can_model(Path(settings.BASE_DIR) / 'model' / 'part_b.pth')
+# load both models at startup so we're not reloading on every request
+MODEL_A = load_can_model(Path(settings.BASE_DIR) / 'model' / 'part_a.pth')
+MODEL_B = load_can_model(Path(settings.BASE_DIR) / 'model' / 'part_b.pth')
 
 
-def run_model(image_path, expected_count):
-    model, model_label = select_model(_MODEL_A, _MODEL_B, expected_count)
-
-    dm_filename = "results/{stem}_{uid}_heatmap.png".format(
-        stem=image_path.stem, uid=uuid.uuid4().hex[:8]
-    )
-    dm_save_path = Path(settings.MEDIA_ROOT) / dm_filename
-
-    result = predict_crowd(model, image_path, density_map_save_path=dm_save_path)
-
-    density_map_url = (
-        settings.MEDIA_URL + dm_filename.replace('\\', '/')
-        if result['density_map_saved'] else None
-    )
-
-    return {
-        'crowd_count': result['crowd_count'],
-        'mae': None,
-        'mse': None,
-        'model_name': model_label,
-        'density_map_url': density_map_url,
-    }
-
-
-@require_http_methods(["GET", "POST"])
 def upload_view(request):
     context = {'error': None, 'density_threshold': DENSITY_THRESHOLD}
 
@@ -50,90 +27,115 @@ def upload_view(request):
         file_obj = request.FILES.get('file_data')
 
         if not file_obj:
-            context['error'] = 'No file was selected. Please choose an image.'
+            context['error'] = 'No file selected.'
             return render(request, 'crowd_app/upload.html', context)
 
-        ALLOWED_EXTS = {'.jpg', '.jpeg', '.png'}
+        # only accept jpg/png
         ext = Path(file_obj.name).suffix.lower()
-        if ext not in ALLOWED_EXTS:
-            context['error'] = 'Unsupported file type "{}". Please upload a jpg or png.'.format(ext)
+        if ext not in ['.jpg', '.jpeg', '.png']:
+            context['error'] = 'File type not supported. Please upload a jpg or png image.'
             return render(request, 'crowd_app/upload.html', context)
 
+        # get the expected count from the form (used to choose Part A vs Part B)
         try:
             expected_count = int(request.POST.get('expected_count', 0))
-            if expected_count < 0:
-                expected_count = 0
-        except (ValueError, TypeError):
+        except ValueError:
             expected_count = 0
 
-        stem = Path(file_obj.name).stem
-        unique = uuid.uuid4().hex[:8]
-        safe_name = "{stem}_{unique}{ext}".format(stem=stem, unique=unique, ext=ext)
+        if expected_count < 0:
+            expected_count = 0
 
-        rel_path = Path('uploads') / safe_name
-        with default_storage.open(str(rel_path), 'wb+') as dest:
+        # save the uploaded file with a unique name to avoid collisions
+        original_stem = Path(file_obj.name).stem
+        unique_id = uuid.uuid4().hex[:8]
+        save_name = '{}_{}{}'.format(original_stem, unique_id, ext)
+        save_path = os.path.join('uploads', save_name)
+
+        with default_storage.open(save_path, 'wb+') as f:
             for chunk in file_obj.chunks():
-                dest.write(chunk)
+                f.write(chunk)
 
-        request.session['cv_input_image_url'] = settings.MEDIA_URL + str(rel_path).replace('\\', '/')
-        request.session['cv_original_filename'] = file_obj.name
-        request.session['cv_expected_count'] = expected_count
+        # store in session so the results page can pick it up
+        image_url = settings.MEDIA_URL + save_path.replace('\\', '/')
+        request.session['input_image_url'] = image_url
+        request.session['original_filename'] = file_obj.name
+        request.session['expected_count'] = expected_count
 
         return redirect('crowd_app:results')
 
     return render(request, 'crowd_app/upload.html', context)
 
 
-@require_http_methods(["GET"])
 def results_view(request):
-    input_image_url = request.session.get('cv_input_image_url')
-    original_filename = request.session.get('cv_original_filename', '')
-    expected_count = request.session.get('cv_expected_count', 0)
+    input_image_url = request.session.get('input_image_url')
+    original_filename = request.session.get('original_filename', '')
+    expected_count = request.session.get('expected_count', 0)
 
+    # if they navigate here directly without uploading, send them back
     if not input_image_url:
         return redirect('crowd_app:upload')
 
+    # reconstruct the file path from the URL
     rel_path = input_image_url.replace(settings.MEDIA_URL, '', 1)
     image_path = Path(settings.MEDIA_ROOT) / rel_path
 
-    predictions = run_model(image_path, expected_count)
+    # choose model based on expected crowd size
+    model, model_label = select_model(MODEL_A, MODEL_B, expected_count)
+
+    # run inference and save the density map
+    heatmap_name = 'results/{}_heatmap.png'.format(uuid.uuid4().hex[:8])
+    heatmap_path = Path(settings.MEDIA_ROOT) / heatmap_name
+
+    crowd_count = predict_crowd(model, image_path, density_map_save_path=heatmap_path)
+    density_map_url = settings.MEDIA_URL + heatmap_name
 
     context = {
         'input_image_url': input_image_url,
         'original_filename': original_filename,
         'expected_count': expected_count,
-        **predictions,
+        'crowd_count': crowd_count,
+        'model_name': model_label,
+        'density_map_url': density_map_url,
+        # could add MAE/MSE here if we had ground truth
+        'mae': None,
+        'mse': None,
     }
 
     return render(request, 'crowd_app/results.html', context)
 
 
-@require_http_methods(["GET"])
 def live_view(request):
     return render(request, 'crowd_app/live.html')
 
 
-@require_http_methods(["GET"])
 def about_view(request):
     return render(request, 'about/about.html')
 
 
-@require_http_methods(["POST"])
 def live_infer_view(request):
+    """
+    Called by the live page via fetch() — receives a base64 webcam frame,
+    runs inference, and returns the count + heatmap URL as JSON.
+    """
+    if request.method != 'POST':
+        return JsonResponse({'error': 'POST only'}, status=405)
+
     try:
         payload = json.loads(request.body)
-    except (json.JSONDecodeError, UnicodeDecodeError):
+    except json.JSONDecodeError:
         return JsonResponse({'error': 'invalid JSON'}, status=400)
 
     image_data = payload.get('image', '')
     if not image_data or ',' not in image_data:
-        return JsonResponse({'error': 'no image'}, status=400)
+        return JsonResponse({'error': 'no image data'}, status=400)
 
-    _, encoded = image_data.split(',', 1)
+    # strip the data URL header (e.g. "data:image/jpeg;base64,")
+    header, encoded = image_data.split(',', 1)
+
     try:
         img_bytes = base64.b64decode(encoded)
     except Exception:
-        return JsonResponse({'error': 'bad base64'}, status=400)
+        return JsonResponse({'error': 'could not decode image'}, status=400)
 
     try:
         expected_count = int(payload.get('expected_count', 0))
@@ -142,27 +144,18 @@ def live_infer_view(request):
     except (ValueError, TypeError):
         expected_count = 0
 
-    model, model_label = select_model(_MODEL_A, _MODEL_B, expected_count)
+    model, model_label = select_model(MODEL_A, MODEL_B, expected_count)
 
-    tmp_fd, tmp_path_str = tempfile.mkstemp(suffix='.jpg')
-    tmp_path = Path(tmp_path_str)
-    try:
-        with os.fdopen(tmp_fd, 'wb') as f:
-            f.write(img_bytes)
+    # save the frame temporarily so predict_crowd can open it
+    img = Image.open(io.BytesIO(img_bytes)).convert('RGB')
+    tmp_path = Path(settings.MEDIA_ROOT) / 'results' / 'live_tmp.jpg'
+    img.save(str(tmp_path))
 
-        dm_save_path = Path(settings.MEDIA_ROOT) / 'results' / 'live_heatmap.png'
-        result = predict_crowd(model, tmp_path, density_map_save_path=dm_save_path)
+    heatmap_path = Path(settings.MEDIA_ROOT) / 'results' / 'live_heatmap.png'
+    crowd_count = predict_crowd(model, tmp_path, density_map_save_path=heatmap_path)
 
-        density_map_url = (
-            settings.MEDIA_URL + 'results/live_heatmap.png'
-            if result['density_map_saved'] else None
-        )
-        return JsonResponse({
-            'crowd_count': result['crowd_count'],
-            'model_name': model_label,
-            'density_map_url': density_map_url,
-        })
-    except Exception as exc:
-        return JsonResponse({'error': str(exc)}, status=500)
-    finally:
-        tmp_path.unlink(missing_ok=True)
+    return JsonResponse({
+        'crowd_count': crowd_count,
+        'model_name': model_label,
+        'density_map_url': settings.MEDIA_URL + 'results/live_heatmap.png',
+    })

@@ -17,6 +17,8 @@ from streams import blocks
 
 
 class HomePageCarouselImages(Orderable):
+    """Between 1 and 5 images for the home page carousel."""
+
     page = ParentalKey("home.HomePage", related_name="carousel_images")
     carousel_image = models.ForeignKey(
         "wagtailimages.Image",
@@ -30,6 +32,8 @@ class HomePageCarouselImages(Orderable):
 
 
 class HomePage(Page):
+    """Home page model."""
+
     template = "home/home_page.html"
     max_count = 1
 

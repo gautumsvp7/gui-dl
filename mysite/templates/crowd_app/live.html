@@ -129,13 +129,11 @@
   var csrfToken = '{{ csrf_token }}';
   var inferUrl  = '{% url "crowd_app:live_infer" %}';
 
-  var stream          = null;
-  var inferTimer      = null;
-  var staleTimer      = null;
-  var running         = false;
-  var capacity        = null;
-  var currentCount    = 0;
-  var lastSuccessTime = null;
+  var stream       = null;
+  var inferTimer   = null;
+  var running      = false;
+  var capacity     = null;
+  var currentCount = 0;
 
   function openModal() {
     modal.classList.add('active');
@@ -180,18 +178,7 @@
     }
   }
 
-  function startStaleCheck() {
-    staleTimer = setInterval(function () {
-      if (!lastSuccessTime) return;
-      var age = Math.round((Date.now() - lastSuccessTime) / 1000);
-      if (age >= 6) {
-        setStatus('feed stalled (' + age + 's ago)', '#dc2626');
-      }
-    }, 1000);
-  }
-
   function updateTimestamp() {
-    lastSuccessTime = Date.now();
     lastUpdatedEl.textContent = 'updated ' + new Date().toLocaleTimeString();
   }
 
@@ -204,7 +191,6 @@
       running = true;
       updateTimestamp();
       scheduleInfer();
-      startStaleCheck();
     })
     .catch(function (err) {
       if (err.name === 'NotAllowedError' || err.name === 'PermissionDeniedError') {
@@ -264,12 +250,7 @@
     statusEl.style.color = color;
   }
 
-  window.addEventListener('beforeunload', function () {
-    running = false;
-    clearTimeout(inferTimer);
-    clearInterval(staleTimer);
-    if (stream) stream.getTracks().forEach(function (t) { t.stop(); });
-  });
+
 })();
 </script>
 {% endblock %}
