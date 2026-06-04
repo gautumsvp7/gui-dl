@@ -51,11 +51,11 @@ class CAN(nn.Module):
 
         vgg16 = models.vgg16(weights=None)
         self.frontend = nn.Sequential(*list(vgg16.features.children())[:23])
-        self.context_module = ContextualModule(512, 512)
+        self.context = ContextualModule(512, 512)
 
         backend_channels = [512, 512, 512, 256, 128, 64]
         self.backend = self.build_backend(backend_channels, in_ch=512, dilation=2)
-        self.output_layer = nn.Conv2d(64, 1, kernel_size=1)
+        self.output = nn.Conv2d(64, 1, kernel_size=1)
 
     def build_backend(self, channel_list, in_ch, dilation):
         layers = []
@@ -70,9 +70,9 @@ class CAN(nn.Module):
 
     def forward(self, x):
         x = self.frontend(x)
-        x = self.context_module(x)
+        x = self.context(x)
         x = self.backend(x)
-        return self.output_layer(x)
+        return self.output(x)
 
 
 IMAGENET_MEAN = [0.485, 0.456, 0.406]
@@ -92,6 +92,8 @@ DENSITY_THRESHOLD = 200
 def load_can_model(weights_path):
     model = CAN().to(device)
     checkpoint = torch.load(str(weights_path), map_location=device)
+    if 'model_state_dict' in checkpoint:
+        checkpoint = checkpoint['model_state_dict']
     model.load_state_dict(checkpoint)
     model.eval()
     return model
