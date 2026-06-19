@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>About Alexandria - CrowdVision</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif:wght@400;700&family=Inter:wght@400;500&family=Public+Sans:wght@400;700&family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&family=Noto+Serif:wght@100..900&family=Public+Sans:wght@100..900&display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "on-secondary-container": "#606569",
+                    "outline-variant": "#c3c6d5",
+                    "on-primary-fixed": "#001946",
+                    "surface-container-low": "#f5f3f4",
+                    "surface-dim": "#dbdadb",
+                    "secondary": "#5a5f63",
+                    "primary": "#094cb2",
+                    "surface-container-highest": "#e3e2e3",
+                    "on-surface": "#1b1c1d",
+                    "surface": "#faf9fa",
+                    "primary-container": "#3366cc",
+                    "surface-container-high": "#e9e8e9",
+                    "surface-container": "#efedee",
+                    "outline": "#737784",
+                    "surface-tint": "#2259bf",
+                    "on-tertiary-fixed": "#211b00",
+                    "on-error": "#ffffff",
+                    "on-background": "#1b1c1d",
+                    "inverse-surface": "#303031",
+                    "secondary-fixed-dim": "#c2c7cc",
+                    "on-secondary-fixed": "#171c20",
+                    "primary-fixed": "#d9e2ff",
+                    "secondary-fixed": "#dfe3e8",
+                    "on-tertiary": "#ffffff",
+                    "on-primary-fixed-variant": "#00419d",
+                    "inverse-on-surface": "#f2f0f1",
+                    "primary-fixed-dim": "#b1c5ff",
+                    "on-primary": "#ffffff",
+                    "error": "#ba1a1a",
+                    "on-secondary": "#ffffff",
+                    "tertiary-fixed-dim": "#dcc661",
+                    "secondary-container": "#dfe3e8",
+                    "background": "#faf9fa",
+                    "tertiary-fixed": "#f9e37a",
+                    "on-tertiary-fixed-variant": "#524600",
+                    "tertiary": "#6d5e00",
+                    "tertiary-container": "#bfab49",
+                    "surface-bright": "#faf9fa",
+                    "on-primary-container": "#e7ebff",
+                    "on-error-container": "#93000a",
+                    "on-tertiary-container": "#4a3f00",
+                    "on-surface-variant": "#434653",
+                    "error-container": "#ffdad6",
+                    "inverse-primary": "#b1c5ff",
+                    "surface-variant": "#e3e2e3",
+                    "surface-container-lowest": "#ffffff",
+                    "on-secondary-fixed-variant": "#42474b"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.125rem",
+                    "lg": "0.25rem",
+                    "xl": "0.5rem",
+                    "full": "0.75rem"
+            },
+            "fontFamily": {
+                    "headline": ["Noto Serif"],
+                    "display": ["Noto Serif"],
+                    "body": ["Inter"],
+                    "label": ["Public Sans"]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body {
+            background-color: #171c20; /* Matching on-secondary-fixed for dark editorial look */
+            color: #ffffff;
+            font-family: 'Inter', sans-serif;
+        }
+        .serif-title {
+            font-family: 'Noto Serif', serif;
+        }
+        .glass-effect {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+        }
+    </style>
+</head>
+<body class="selection:bg-tertiary selection:text-on-tertiary min-h-screen flex flex-col">
+<!-- TopNavBar -->
+<header class="bg-surface-container-lowest dark:bg-on-secondary-fixed shadow-sm docked full-width top-0 sticky z-50">
+<nav class="flex justify-between items-center w-full px-8 py-6 max-w-screen-2xl mx-auto">
+<div class="font-headline text-2xl font-bold text-on-surface dark:text-inverse-on-surface flex items-center gap-2">
+<span class="material-symbols-outlined text-primary dark:text-primary-fixed">visibility</span>
+                Alexandria
+            </div>
+<div class="hidden md:flex items-center space-x-12">
+<a class="text-on-surface-variant dark:text-outline-variant font-medium hover:text-on-surface transition-colors" href="#">Upload</a>
+<a class="text-on-surface-variant dark:text-outline-variant font-medium hover:text-on-surface transition-colors" href="#">Results</a>
+<a class="text-primary dark:text-primary-fixed font-bold border-b-2 border-primary dark:border-primary-fixed pb-1" href="#">About</a>
+</div>
+<div class="flex items-center gap-6">
+<div class="hidden md:flex items-center gap-4">
+<span class="material-symbols-outlined text-on-surface-variant dark:text-outline-variant cursor-pointer hover:text-primary transition-all">account_circle</span>
+<span class="material-symbols-outlined text-on-surface-variant dark:text-outline-variant cursor-pointer hover:text-primary transition-all">settings</span>
+</div>
+<button class="bg-primary text-on-primary px-6 py-2 rounded-full font-label text-sm uppercase tracking-wider font-bold transition-all hover:opacity-80">
+                    Monitor Live
+                </button>
+</div>
+</nav>
+</header>
+<!-- Main Content -->
+<main class="flex-grow max-w-7xl mx-auto px-6 py-24 md:py-32 w-full">
+<!-- Breadcrumb / Label -->
+<p class="font-label text-tertiary-fixed text-sm uppercase tracking-[0.3em] mb-4 opacity-80">The Project</p>
+<div class="flex flex-col lg:flex-row gap-16 xl:gap-24">
+<!-- Narrative Column -->
+<div class="lg:w-7/12">
+<h1 class="serif-title text-5xl md:text-7xl font-bold leading-tight mb-12 text-white">
+                    About CrowdVision
+                </h1>
+<div class="space-y-8 text-lg md:text-xl font-body leading-relaxed text-surface-variant opacity-90 max-w-2xl">
+<p>
+                        We started CrowdVision because the tools venues use to manage crowds haven't really changed. A person at the door with a clicker, or a basic entry sensor that tells you a number but nothing else. No map, no hotspots, no warning before things get dangerous.
+                    </p>
+<p>
+                        We're a team of students from UTS Sydney who built this as a deep learning project, but the problem we set out to solve is very real. Crowd crushes and stampedes aren't freak accidents. They are the result of density building up faster than anyone noticed.
+                    </p>
+<p class="font-bold text-white border-l-4 border-tertiary pl-6 py-2 italic">
+                        Most of those incidents are preventable with better information.
+                    </p>
+<p>
+                        CrowdVision gives venues that information. Connect your existing CCTV infrastructure and within seconds you get a live count and a heatmap showing exactly where people are concentrated. Not just how many, but where. That's the part that matters when you need to decide whether to open another exit, redirect foot traffic, or call for extra staff.
+                    </p>
+<p>
+                        The key is that you don't need to rip out or replace anything. Most venues already have cameras everywhere — CrowdVision just makes them smarter.
+                    </p>
+</div>
+<div class="mt-16 pt-8 border-t border-white/10 flex items-center gap-4">
+<span class="material-symbols-outlined text-tertiary-fixed">school</span>
+<span class="font-label text-sm uppercase tracking-widest text-surface-dim">UTS Sydney · 2026</span>
+</div>
+</div>
+<!-- Founders Vertical List (Right Side) -->
+<div class="lg:w-5/12">
+<div class="sticky top-32">
+<h3 class="font-label text-xs uppercase tracking-[0.4em] mb-12 text-outline-variant/60">Founders</h3>
+<div class="space-y-12">
+<!-- Founder 1 -->
+<div class="group flex items-center gap-8 p-4 rounded-xl transition-all duration-500 hover:bg-white/5">
+<div class="relative">
+<div class="absolute -inset-1 rounded-full bg-gradient-to-tr from-primary to-tertiary blur opacity-20 group-hover:opacity-60 transition duration-500"></div>
+<img alt="Gautum V." class="relative w-24 h-24 md:w-32 md:h-32 rounded-full object-cover filter grayscale group-hover:grayscale-0 transition-all duration-700" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCgW7mxiTSFJOWvTeUXXUaxAmN-J_4VhxXltdo1Enw5mh0tS9x9DIw7Tnj8eYcn-4jWZM7yXgP8tsjIRFz5-6z3moAGlC3O_AIeaVTyhK0xGRpP3V1Kf39S1FyyHK1UxKCrhzEayQ0-p3T7-XZo2mNAEG1GF6Qt3UawxctglPKm0ZGZepfTvGpq3CLQKzYg7HcTG0yrHcn4G5hqeZjpmq_6c2TE0RQfniw0MIuYhyT6PzR2Iu6fpMorpoyN-ei0NcZjOB97i7Toln_4"/>
+</div>
+<div>
+<h4 class="serif-title text-2xl font-bold text-white group-hover:text-primary-fixed transition-colors">Gautum V.</h4>
+<p class="font-label text-xs uppercase tracking-widest text-tertiary-fixed mt-1">Lead Researcher</p>
+</div>
+</div>
+<!-- Founder 2 -->
+<div class="group flex items-center gap-8 p-4 rounded-xl transition-all duration-500 hover:bg-white/5">
+<div class="relative">
+<div class="absolute -inset-1 rounded-full bg-gradient-to-tr from-primary to-tertiary blur opacity-20 group-hover:opacity-60 transition duration-500"></div>
+<img alt="Manaswin Doma" class="relative w-24 h-24 md:w-32 md:h-32 rounded-full object-cover filter grayscale group-hover:grayscale-0 transition-all duration-700" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDvlZjdZRhwwRIyTcKgVd6rZVjETaOXHWs4HT9kHgKqO6bVCPrep1GXPHK5hMCtS5RFpuQgrcItow5vmvEmwiSP1b_TGBQxTplkIR5XUAA_HvzByEoS87SW65QRMc_xONDuD8IJDTkk9b96pC3Qh_5FpvFqu8p2apArAIlYrzPoWR0sX1NigYaf_u3ece-m6P-yHUcqmYzb9ID36DfMPbYAPINZ40MdkeXcK-oxYvsMk71myb8J-eGuyo0GKbU3dYxWGBnI4sPEpdB4"/>
+</div>
+<div>
+<h4 class="serif-title text-2xl font-bold text-white group-hover:text-primary-fixed transition-colors">Manaswin Doma</h4>
+<p class="font-label text-xs uppercase tracking-widest text-tertiary-fixed mt-1">Systems Architect</p>
+</div>
+</div>
+<!-- Founder 3 -->
+<div class="group flex items-center gap-8 p-4 rounded-xl transition-all duration-500 hover:bg-white/5">
+<div class="relative">
+<div class="absolute -inset-1 rounded-full bg-gradient-to-tr from-primary to-tertiary blur opacity-20 group-hover:opacity-60 transition duration-500"></div>
+<img alt="Dongyeon Kim" class="relative w-24 h-24 md:w-32 md:h-32 rounded-full object-cover filter grayscale group-hover:grayscale-0 transition-all duration-700" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCXIZ4hRuhHMqw4BpB6JCNWRrq9mU5ZVrat-p1wzqknM5Hq2awlsxqXp-BheMrbOEg4pZ69Ph4CQYhglzmtpsvozz5MP1oRf75ZzbvYxJyYqXldfnt5xTkEuBQ8hUMwJEdANwHHL2ZUS4z_yDN9MVsADL7nZXQIltXLvuFWj2-8utIpLfNq3-70zhHrEZk5BYwRDcalDwI77zTpo6LT-qLQ18J7OiRpsvnXfo6-b7ca7-PrGHRqgNZMI4JOruK3W0WXVp2OH6hxIS-q"/>
+</div>
+<div>
+<h4 class="serif-title text-2xl font-bold text-white group-hover:text-primary-fixed transition-colors">Dongyeon Kim</h4>
+<p class="font-label text-xs uppercase tracking-widest text-tertiary-fixed mt-1">Product Visionary</p>
+</div>
+</div>
+</div>
+<!-- Aesthetic Callout -->
+<div class="mt-20 p-8 glass-effect border border-white/5 rounded-xl">
+<p class="text-surface-variant text-sm font-body italic">"Precision at scale. Using deep learning to safeguard the human experience in dense urban environments."</p>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- Footer -->
+<footer class="bg-surface-dim dark:bg-inverse-surface full-width bottom mt-24">
+<div class="flex flex-col md:flex-row justify-between items-center w-full px-12 py-16 gap-8 max-w-screen-2xl mx-auto">
+<div class="flex flex-col items-center md:items-start gap-4">
+<div class="font-headline text-xl text-on-surface dark:text-inverse-on-surface flex items-center gap-2">
+<span class="material-symbols-outlined">visibility</span>
+                    Alexandria
+                </div>
+<p class="font-body text-label-sm tracking-wide text-on-surface-variant opacity-70">
+                    © 2024 Alexandria Collective. Scholarly Precision.
+                </p>
+</div>
+<div class="flex flex-wrap justify-center gap-8 font-body text-label-sm tracking-wide">
+<a class="text-on-surface-variant hover:underline decoration-tertiary underline-offset-4 transition-all" href="#">Archives</a>
+<a class="text-on-surface-variant hover:underline decoration-tertiary underline-offset-4 transition-all" href="#">Terms of Service</a>
+<a class="text-on-surface-variant hover:underline decoration-tertiary underline-offset-4 transition-all" href="#">Privacy Policy</a>
+<a class="text-on-surface-variant hover:underline decoration-tertiary underline-offset-4 transition-all" href="#">Institutional Access</a>
+</div>
+</div>
+</footer>
+<script>
+        // Micro-interaction for scroll fade
+        window.addEventListener('scroll', () => {
+            const scrolled = window.scrollY;
+            const logo = document.querySelector('.font-headline');
+            if (scrolled > 50) {
+                logo.classList.add('opacity-80');
+            } else {
+                logo.classList.remove('opacity-80');
+            }
+        });
+    </script>
+</body></html>

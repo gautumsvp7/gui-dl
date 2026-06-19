@@ -1,42 +1,97 @@
 {% extends "base.html" %}
 
 {% block title %}About – CrowdVision{% endblock %}
+{% block nav_about %}text-brand-blue border-b-2 border-brand-blue pb-1{% endblock %}
 
 {% block content %}
-<div style="max-width: 760px; margin: 60px auto; padding: 0 1rem; line-height: 1.75; color: #333;">
-  <h1 style="font-size: 2rem; margin-bottom: 1.5rem;">About CrowdVision</h1>
 
-  <p>
-    We started CrowdVision because the tools venues use to manage crowds haven't really changed.
-    A person at the door with a clicker, or a basic entry sensor that tells you a number but nothing else.
-    No map, no hotspots, no warning before things get dangerous.
-  </p>
+<!-- Breadcrumb / Label -->
+<p class="font-label text-tertiary-fixed text-sm uppercase tracking-[0.3em] mb-4 opacity-80">The Project</p>
 
-  <p>
-    We're a team of students from UTS Sydney who built this as a deep learning project, but the problem
-    we set out to solve is very real. Crowd crushes and stampedes aren't freak accidents. They are the
-    result of density building up faster than anyone noticed.
-  </p>
+<div class="flex flex-col lg:flex-row gap-16 xl:gap-24">
 
-  <p>Most of those incidents are preventable with better information.</p>
+  <!-- Narrative Column -->
+  <div class="lg:w-7/12">
+    <h1 class="font-headline text-5xl md:text-7xl font-bold leading-tight mb-12 text-white">
+      About CrowdVision
+    </h1>
+    <div class="space-y-8 text-lg md:text-xl font-body leading-relaxed text-white/60 max-w-2xl">
+      <p>
+        We started CrowdVision because the tools venues use to manage crowds haven't really changed. A person at the door with a clicker, or a basic entry sensor that tells you a number but nothing else. No map, no hotspots, no warning before things get dangerous.
+      </p>
+      <p>
+        We're a team of students from UTS Sydney who built this as a deep learning project, but the problem we set out to solve is very real. Crowd crushes and stampedes aren't freak accidents. They are the result of density building up faster than anyone noticed.
+      </p>
+      <p class="font-bold text-white border-l-4 border-tertiary pl-6 py-2 italic">
+        Most of those incidents are preventable with better information.
+      </p>
+      <p>
+        CrowdVision gives venues that information. Connect your existing CCTV infrastructure and within seconds you get a live count and a heatmap showing exactly where people are concentrated. Not just how many, but where. That's the part that matters when you need to decide whether to open another exit, redirect foot traffic, or call for extra staff.
+      </p>
+      <p>
+        The key is that you don't need to rip out or replace anything. Most venues already have cameras everywhere — CrowdVision just makes them smarter.
+      </p>
+    </div>
+    <div class="mt-16 pt-8 border-t border-white/10 flex items-center gap-4">
+      <span class="material-symbols-outlined text-tertiary-fixed">school</span>
+      <span class="font-label text-sm uppercase tracking-widest text-white/40">UTS Sydney · 2026</span>
+    </div>
+  </div>
 
-  <p>
-    CrowdVision gives venues that information. Connect your existing CCTV infrastructure and within
-    seconds you get a live count and a heatmap showing exactly where people are concentrated. Not just
-    how many, but where. That's the part that matters when you need to decide whether to open another
-    exit, redirect foot traffic, or call for extra staff.
-  </p>
+  <!-- Founders Right Column -->
+  <div class="lg:w-5/12">
+    <div class="sticky top-32">
+      <h3 class="font-label text-xs uppercase tracking-[0.4em] mb-12 text-white/40">Founders</h3>
+      <div class="space-y-12">
 
-  <p>
-    The key is that you don't need to rip out or replace anything. Most venues already have cameras
-    everywhere — CrowdVision just makes them smarter.
-  </p>
+        <!-- Founder 1 -->
+        <div class="group flex items-center gap-8 p-4 rounded-xl transition-all duration-500 hover:bg-white/5">
+          <div class="relative flex-shrink-0">
+            <div class="absolute -inset-1 rounded-full bg-gradient-to-tr from-primary to-tertiary blur opacity-20 group-hover:opacity-60 transition duration-500"></div>
+            <img alt="Gautum V." class="relative w-24 h-24 md:w-32 md:h-32 rounded-full object-cover filter grayscale group-hover:grayscale-0 transition-all duration-700"
+                 src="https://lh3.googleusercontent.com/aida-public/AB6AXuCgW7mxiTSFJOWvTeUXXUaxAmN-J_4VhxXltdo1Enw5mh0tS9x9DIw7Tnj8eYcn-4jWZM7yXgP8tsjIRFz5-6z3moAGlC3O_AIeaVTyhK0xGRpP3V1Kf39S1FyyHK1UxKCrhzEayQ0-p3T7-XZo2mNAEG1GF6Qt3UawxctglPKm0ZGZepfTvGpq3CLQKzYg7HcTG0yrHcn4G5hqeZjpmq_6c2TE0RQfniw0MIuYhyT6PzR2Iu6fpMorpoyN-ei0NcZjOB97i7Toln_4"/>
+          </div>
+          <div>
+            <h4 class="font-headline text-2xl font-bold text-white group-hover:text-primary-fixed transition-colors">Gautum V.</h4>
+            <p class="font-label text-xs uppercase tracking-widest text-tertiary-fixed mt-1">Lead Researcher</p>
+          </div>
+        </div>
 
-  <h2 style="font-size: 1.25rem; margin-top: 2.5rem; margin-bottom: 0.75rem;">Founders</h2>
-  <ul style="list-style: none; padding: 0; margin: 0;">
-    <li>Gautum Vaisiam Parambil</li>
-    <li>Manaswini Doma</li>
-    <li>Dongyeon Kim</li>
-  </ul>
+        <!-- Founder 2 -->
+        <div class="group flex items-center gap-8 p-4 rounded-xl transition-all duration-500 hover:bg-white/5">
+          <div class="relative flex-shrink-0">
+            <div class="absolute -inset-1 rounded-full bg-gradient-to-tr from-primary to-tertiary blur opacity-20 group-hover:opacity-60 transition duration-500"></div>
+            <img alt="Manaswini Doma" class="relative w-24 h-24 md:w-32 md:h-32 rounded-full object-cover filter grayscale group-hover:grayscale-0 transition-all duration-700"
+                 src="https://lh3.googleusercontent.com/aida-public/AB6AXuDvlZjdZRhwwRIyTcKgVd6rZVjETaOXHWs4HT9kHgKqO6bVCPrep1GXPHK5hMCtS5RFpuQgrcItow5vmvEmwiSP1b_TGBQxTplkIR5XUAA_HvzByEoS87SW65QRMc_xONDuD8IJDTkk9b96pC3Qh_5FpvFqu8p2apArAIlYrzPoWR0sX1NigYaf_u3ece-m6P-yHUcqmYzb9ID36DfMPbYAPINZ40MdkeXcK-oxYvsMk71myb8J-eGuyo0GKbU3dYxWGBnI4sPEpdB4"/>
+          </div>
+          <div>
+            <h4 class="font-headline text-2xl font-bold text-white group-hover:text-primary-fixed transition-colors">Manaswini Doma</h4>
+            <p class="font-label text-xs uppercase tracking-widest text-tertiary-fixed mt-1">Systems Architect</p>
+          </div>
+        </div>
+
+        <!-- Founder 3 -->
+        <div class="group flex items-center gap-8 p-4 rounded-xl transition-all duration-500 hover:bg-white/5">
+          <div class="relative flex-shrink-0">
+            <div class="absolute -inset-1 rounded-full bg-gradient-to-tr from-primary to-tertiary blur opacity-20 group-hover:opacity-60 transition duration-500"></div>
+            <img alt="Dongyeon Kim" class="relative w-24 h-24 md:w-32 md:h-32 rounded-full object-cover filter grayscale group-hover:grayscale-0 transition-all duration-700"
+                 src="https://lh3.googleusercontent.com/aida-public/AB6AXuCXIZ4hRuhHMqw4BpB6JCNWRrq9mU5ZVrat-p1wzqknM5Hq2awlsxqXp-BheMrbOEg4pZ69Ph4CQYhglzmtpsvozz5MP1oRf75ZzbvYxJyYqXldfnt5xTkEuBQ8hUMwJEdANwHHL2ZUS4z_yDN9MVsADL7nZXQIltXLvuFWj2-8utIpLfNq3-70zhHrEZk5BYwRDcalDwI77zTpo6LT-qLQ18J7OiRpsvnXfo6-b7ca7-PrGHRqgNZMI4JOruK3W0WXVp2OH6hxIS-q"/>
+          </div>
+          <div>
+            <h4 class="font-headline text-2xl font-bold text-white group-hover:text-primary-fixed transition-colors">Dongyeon Kim</h4>
+            <p class="font-label text-xs uppercase tracking-widest text-tertiary-fixed mt-1">Product Visionary</p>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Aesthetic Callout -->
+      <div class="mt-20 p-8 glass-card rounded-xl">
+        <p class="text-white/60 text-sm font-body italic">"Precision at scale. Using deep learning to safeguard the human experience in dense urban environments."</p>
+      </div>
+    </div>
+  </div>
+
 </div>
+
 {% endblock %}

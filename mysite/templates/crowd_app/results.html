@@ -2,99 +2,135 @@
 {% load static %}
 
 {% block title %}Results – CrowdVision{% endblock %}
-{% block nav_results %}active{% endblock %}
+{% block nav_results %}text-brand-blue border-b-2 border-brand-blue pb-1{% endblock %}
+
+{% block main_padding %}py-3{% endblock %}
 
 {% block content %}
-<div class="cv-results-wrapper">
 
-  <div class="cv-panels">
+<div class="flex flex-col gap-3" style="height: calc(100vh - 80px - 1.5rem);">
 
-    <div class="cv-panel">
-      <p class="cv-panel-label">input image</p>
-      <div class="cv-image-box">
+  <!-- Section Header -->
+  <div class="flex flex-col md:flex-row md:items-center justify-between gap-2 border-b border-white/10 pb-3 flex-shrink-0">
+    <div>
+      <p class="font-label text-white/50 uppercase tracking-[0.4em] text-[10px] font-bold">Scholarly Surveillance Interface</p>
+      <h1 class="font-headline text-xl md:text-2xl text-white font-bold tracking-tight leading-tight">Density Report</h1>
+    </div>
+    <div class="flex items-center gap-3 bg-white/5 px-4 py-2 rounded-full border border-white/5 text-white">
+      <span class="material-symbols-outlined text-sm text-green-400" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+      <span class="font-label text-[10px] uppercase tracking-widest font-bold">Analysis Complete</span>
+    </div>
+  </div>
+
+  <!-- Main Visual Feeds -->
+  <div class="grid grid-cols-2 gap-4 flex-1 min-h-0">
+
+    <!-- Input Image -->
+    <div class="flex flex-col gap-2 min-h-0">
+      <div class="flex items-center justify-between flex-shrink-0">
+        <h3 class="font-headline text-sm font-semibold text-white/90 flex items-center gap-2 uppercase tracking-wider">
+          <span class="material-symbols-outlined text-brand-blue text-base">image</span>
+          input image
+        </h3>
+        <span class="font-label text-[10px] uppercase tracking-widest font-semibold text-white/60">Uploaded Source</span>
+      </div>
+      <div class="bg-black/40 rounded-sm overflow-hidden relative group flex-1 min-h-0 border border-white/10">
         {% if input_image_url %}
-          <img src="{{ input_image_url }}" alt="{{ original_filename|default:'Uploaded image' }}">
+          <img src="{{ input_image_url }}" alt="{{ original_filename|default:'Uploaded image' }}"
+               class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105">
         {% else %}
-          <div class="cv-img-placeholder">
-            <span class="cv-img-placeholder__caption">crowd image</span>
+          <div class="w-full h-full flex items-center justify-center">
+            <div class="text-center space-y-2">
+              <span class="material-symbols-outlined text-4xl text-white/20" style="font-variation-settings: 'FILL' 0, 'wght' 200, 'GRAD' 0, 'opsz' 48;">image_not_supported</span>
+              <p class="font-label text-xs text-white/30 uppercase tracking-widest">crowd image</p>
+            </div>
           </div>
         {% endif %}
       </div>
     </div>
 
-    <div class="cv-panel">
-      <p class="cv-panel-label">density map</p>
-      <div class="cv-image-box">
+    <!-- Density Map -->
+    <div class="flex flex-col gap-2 min-h-0">
+      <div class="flex items-center justify-between flex-shrink-0">
+        <h3 class="font-headline text-sm font-semibold text-white/90 flex items-center gap-2 uppercase tracking-wider">
+          <span class="material-symbols-outlined text-tertiary-fixed-dim text-base">heat_pump</span>
+          density map
+        </h3>
+        <span class="font-label text-[10px] uppercase tracking-widest font-semibold text-white/60">Computed Heat Profile</span>
+      </div>
+      <div class="bg-black/40 rounded-sm overflow-hidden relative group flex-1 min-h-0 border border-white/10">
         {% if density_map_url %}
-          <img src="{{ density_map_url }}" alt="Density heatmap">
+          <img src="{{ density_map_url }}" alt="Density heatmap"
+               class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105">
         {% else %}
-          <svg viewBox="0 0 320 240"
-               xmlns="http://www.w3.org/2000/svg"
-               style="width:62%; height:auto;"
-               aria-label="heatmap placeholder">
-            <ellipse cx="160" cy="120" rx="120" ry="80"
-                     fill="none" stroke="#6b8cb8" stroke-width="1.2" stroke-dasharray="7 4"/>
-            <ellipse cx="160" cy="120" rx="85"  ry="54"
-                     fill="none" stroke="#6b8cb8" stroke-width="1.2" stroke-dasharray="7 4"/>
-            <ellipse cx="160" cy="120" rx="52"  ry="33"
-                     fill="none" stroke="#6b8cb8" stroke-width="1.2" stroke-dasharray="7 4"/>
-            <ellipse cx="160" cy="120" rx="24"  ry="14"
-                     fill="none" stroke="#6b8cb8" stroke-width="1.2" stroke-dasharray="7 4"/>
-          </svg>
-          <span class="cv-heatmap-label">heatmap overlay</span>
+          <div class="w-full h-full flex items-center justify-center">
+            <svg viewBox="0 0 320 240" xmlns="http://www.w3.org/2000/svg" class="w-1/2 h-auto" aria-label="heatmap placeholder">
+              <ellipse cx="160" cy="120" rx="120" ry="80" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="1.2" stroke-dasharray="7 4"/>
+              <ellipse cx="160" cy="120" rx="85"  ry="54" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="1.2" stroke-dasharray="7 4"/>
+              <ellipse cx="160" cy="120" rx="52"  ry="33" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="1.2" stroke-dasharray="7 4"/>
+              <ellipse cx="160" cy="120" rx="24"  ry="14" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="1.2" stroke-dasharray="7 4"/>
+            </svg>
+          </div>
         {% endif %}
       </div>
     </div>
 
   </div>
 
-  <div class="cv-stats">
+  <!-- Data Cards Row -->
+  <div class="grid grid-cols-5 gap-3 flex-shrink-0">
 
-    <div class="cv-stat-col">
-      <p class="cv-stat-col__header">predicted count</p>
-      <div class="cv-stat-card">
-        <div class="cv-stat-card__subtitle">crowd count</div>
-        <div class="cv-stat-card__value">{{ crowd_count|default:"–" }}</div>
+    <!-- Crowd Count -->
+    <div class="glass-card p-3 border-l-4 border-brand-blue transition-all duration-500 hover:bg-white/5 group rounded-sm">
+      <p class="font-label text-[10px] uppercase tracking-[0.2em] text-white/60 mb-1 font-bold">People Detected</p>
+      <div class="flex items-baseline gap-1">
+        <span class="font-headline text-2xl text-white font-bold transition-transform group-hover:scale-105 duration-300">{{ crowd_count|default:"–" }}</span>
+        <span class="font-label text-xs text-white/40 font-medium">units</span>
       </div>
     </div>
 
-    <div class="cv-stat-col">
-      <p class="cv-stat-col__header">MAE</p>
-      <div class="cv-stat-card">
-        <div class="cv-stat-card__subtitle">mean abs. error</div>
-        <div class="cv-stat-card__value">{{ mae|default:"–" }}</div>
-      </div>
+    <!-- MAE -->
+    <div class="glass-card p-3 border-l-4 border-tertiary-fixed-dim transition-all duration-500 hover:bg-white/5 rounded-sm">
+      <p class="font-label text-[10px] uppercase tracking-[0.2em] text-white/60 mb-1 font-bold">MAE</p>
+      <span class="font-display text-2xl text-tertiary-fixed-dim font-bold tracking-tight block">{{ mae|default:"–" }}</span>
+      <p class="font-label text-[9px] text-white/30 tracking-wider uppercase">Mean Abs. Error</p>
     </div>
 
-    <div class="cv-stat-col">
-      <p class="cv-stat-col__header">MSE</p>
-      <div class="cv-stat-card">
-        <div class="cv-stat-card__subtitle">mean sq. error</div>
-        <div class="cv-stat-card__value">{{ mse|default:"–" }}</div>
-      </div>
+    <!-- MSE -->
+    <div class="glass-card p-3 border-l-4 border-white/20 transition-all duration-500 hover:bg-white/5 rounded-sm">
+      <p class="font-label text-[10px] uppercase tracking-[0.2em] text-white/60 mb-1 font-bold">MSE</p>
+      <span class="font-display text-2xl text-white font-bold tracking-tight block">{{ mse|default:"–" }}</span>
+      <p class="font-label text-[9px] text-white/30 tracking-wider uppercase">Mean Sq. Error</p>
     </div>
 
-    <div class="cv-stat-col">
-      <p class="cv-stat-col__header">expected count</p>
-      <div class="cv-stat-card">
-        <div class="cv-stat-card__subtitle">user input</div>
-        <div class="cv-stat-card__value">{{ expected_count|default:"–" }}</div>
-      </div>
+    <!-- Expected Count -->
+    <div class="glass-card p-3 border-l-4 border-white/30 transition-all duration-500 hover:bg-white/5 rounded-sm">
+      <p class="font-label text-[10px] uppercase tracking-[0.2em] text-white/60 mb-1 font-bold">Expected Count</p>
+      <span class="font-display text-2xl text-white/70 font-bold tracking-tight block">{{ expected_count|default:"–" }}</span>
+      <p class="font-label text-[9px] text-white/30 tracking-wider uppercase">User Input</p>
     </div>
 
-    <div class="cv-stat-col">
-      <p class="cv-stat-col__header">model used</p>
-      <div class="cv-stat-card">
-        <div class="cv-stat-card__subtitle">architecture</div>
-        <div class="cv-stat-card__value cv-stat-card__value--model">{{ model_name|default:"–" }}</div>
-      </div>
+    <!-- Model Used -->
+    <div class="glass-card p-3 border-l-4 border-primary-fixed-dim transition-all duration-500 hover:bg-white/5 rounded-sm">
+      <p class="font-label text-[10px] uppercase tracking-[0.2em] text-white/60 mb-1 font-bold">Model Used</p>
+      <p class="font-label text-[9px] text-primary-fixed-dim font-bold uppercase tracking-widest">Selection: Expected Count</p>
+      <p class="font-display text-sm text-white font-semibold leading-tight">{{ model_name|default:"–" }}</p>
     </div>
 
   </div>
 
-  <div class="text-center cv-results-btn-row">
-    <a href="{% url 'crowd_app:upload' %}" class="cv-btn">Upload another</a>
+  <!-- Footer Action -->
+  <div class="flex items-center justify-between flex-shrink-0 pt-1 border-t border-white/10">
+    <a href="{% url 'crowd_app:upload' %}"
+       class="group flex items-center gap-2 border border-white/10 px-5 py-1.5 rounded-full font-label text-xs uppercase tracking-[0.2em] font-bold text-white/60 hover:border-brand-blue hover:text-white hover:bg-brand-blue/10 transition-all duration-500 no-underline">
+      <span class="material-symbols-outlined text-base transition-transform group-hover:-translate-x-1 duration-500">arrow_back</span>
+      upload another
+    </a>
+    <p class="font-body text-[10px] text-white/30 text-right leading-relaxed font-medium">
+      Results computed using the Context-Aware Network (CAN) architecture<br>trained on the ShanghaiTech dataset.
+    </p>
   </div>
 
 </div>
+
 {% endblock %}

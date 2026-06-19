@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Alexandria | Live Monitoring</title>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Google Fonts: Noto Serif, Inter, Public Sans -->
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,400;0,700;1,400&amp;family=Inter:wght@300;400;500;600&amp;family=Public+Sans:wght@300;400;600&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "on-secondary-fixed": "#171c20",
+                    "inverse-on-surface": "#f2f0f1",
+                    "surface-tint": "#2259bf",
+                    "secondary-container": "#dfe3e8",
+                    "on-surface-variant": "#434653",
+                    "surface-container-highest": "#e3e2e3",
+                    "on-primary-fixed-variant": "#00419d",
+                    "on-secondary-fixed-variant": "#42474b",
+                    "inverse-surface": "#303031",
+                    "surface-bright": "#faf9fa",
+                    "surface": "#faf9fa",
+                    "tertiary": "#6d5e00",
+                    "surface-dim": "#dbdadb",
+                    "on-primary-container": "#e7ebff",
+                    "tertiary-container": "#bfab49",
+                    "on-tertiary-container": "#4a3f00",
+                    "error-container": "#ffdad6",
+                    "tertiary-fixed-dim": "#dcc661",
+                    "outline": "#737784",
+                    "on-secondary": "#ffffff",
+                    "primary": "#094cb2",
+                    "on-tertiary": "#ffffff",
+                    "primary-container": "#3366cc",
+                    "on-background": "#1b1c1d",
+                    "on-secondary-container": "#606569",
+                    "error": "#ba1a1a",
+                    "surface-container-low": "#f5f3f4",
+                    "secondary-fixed-dim": "#c2c7cc",
+                    "on-error-container": "#93000a",
+                    "on-tertiary-fixed": "#211b00",
+                    "surface-container-lowest": "#ffffff",
+                    "surface-variant": "#e3e2e3",
+                    "on-tertiary-fixed-variant": "#524600",
+                    "background": "#faf9fa",
+                    "secondary-fixed": "#dfe3e8",
+                    "secondary": "#5a5f63",
+                    "on-error": "#ffffff",
+                    "outline-variant": "#c3c6d5",
+                    "tertiary-fixed": "#f9e37a",
+                    "inverse-primary": "#b1c5ff",
+                    "primary-fixed-dim": "#b1c5ff",
+                    "on-primary": "#ffffff",
+                    "surface-container": "#efedee",
+                    "on-surface": "#1b1c1d",
+                    "surface-container-high": "#e9e8e9",
+                    "primary-fixed": "#d9e2ff",
+                    "on-primary-fixed": "#001946"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.125rem",
+                    "lg": "0.25rem",
+                    "xl": "0.5rem",
+                    "full": "0.75rem"
+            },
+            "fontFamily": {
+                    "headline": ["Inter"],
+                    "display": ["Inter"],
+                    "body": ["Inter"],
+                    "label": ["Public Sans"]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 24;
+            vertical-align: middle;
+        }
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(20px);
+        }
+        .active-nav-border {
+            border-bottom: 2px solid #094cb2;
+            padding-bottom: 4px;
+        }
+    </style>
+</head>
+<body class="bg-surface text-on-surface font-body selection:bg-primary-fixed selection:text-on-primary-fixed overflow-x-hidden">
+<!-- TopNavBar -->
+<header class="bg-surface-container-lowest dark:bg-on-secondary-fixed shadow-sm sticky top-0 z-50">
+<div class="flex justify-between items-center w-full px-8 py-6 max-w-screen-2xl mx-auto">
+<!-- Brand Logo -->
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary text-3xl" style="font-variation-settings: 'FILL' 1;">visibility</span>
+<span class="font-headline text-2xl font-bold text-on-surface dark:text-inverse-on-surface tracking-tight">Alexandria</span>
+</div>
+<!-- Navigation Links -->
+<nav class="hidden md:flex gap-12 items-center">
+<a class="font-body text-on-surface-variant dark:text-outline-variant font-medium hover:text-primary transition-colors" href="#">Upload</a>
+<a class="font-display text-primary dark:text-primary-fixed font-bold border-b-2 border-primary dark:border-primary-fixed pb-1" href="#">Results</a>
+<a class="font-body text-on-surface-variant dark:text-outline-variant font-medium hover:text-primary transition-colors" href="#">About</a>
+</nav>
+<!-- Actions -->
+<div class="flex items-center gap-6">
+<button class="bg-gradient-to-r from-primary to-primary-container text-on-primary px-6 py-2.5 rounded font-label text-sm font-semibold tracking-wide hover:opacity-90 transition-all duration-300">
+                    Monitor Live
+                </button>
+<div class="flex gap-4">
+<span class="material-symbols-outlined text-on-surface-variant hover:text-primary cursor-pointer transition-colors" data-icon="account_circle">account_circle</span>
+<span class="material-symbols-outlined text-on-surface-variant hover:text-primary cursor-pointer transition-colors" data-icon="settings">settings</span>
+</div>
+</div>
+</div>
+</header>
+<main class="max-w-screen-2xl mx-auto px-8 py-12 md:py-20">
+<!-- Section Header -->
+<div class="mb-16 flex flex-col md:flex-row md:items-end justify-between gap-6 border-b border-outline-variant pb-8">
+<div class="space-y-2">
+<p class="font-label text-tertiary uppercase tracking-[0.2em] text-xs font-semibold">Scholarly Surveillance Interface</p>
+<h1 class="font-headline text-4xl md:text-5xl lg:text-6xl text-on-surface font-bold tracking-tight leading-tight">Live Monitoring</h1>
+</div>
+<div class="flex items-center gap-2 text-on-surface-variant">
+<span class="w-2 h-2 rounded-full bg-error animate-pulse"></span>
+<span class="font-label text-xs uppercase tracking-widest font-medium">Session Live: 02:45:12</span>
+</div>
+</div>
+<!-- Main Visual Feeds (Bento Grid Style) -->
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-12 mb-12">
+<!-- Webcam Feed -->
+<div class="space-y-6">
+<div class="flex items-center justify-between">
+<h3 class="font-headline text-xl font-semibold text-on-surface flex items-center gap-2">
+<span class="material-symbols-outlined text-primary" data-icon="videocam">videocam</span>
+                        webcam feed
+                    </h3>
+<span class="font-label text-xs uppercase tracking-tighter text-on-surface-variant">Station 04 • High Hall</span>
+</div>
+<div class="aspect-video bg-surface-container-high rounded overflow-hidden relative group">
+<img alt="Webcam Feed" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" data-alt="A high-angle surveillance perspective of a bright, modern airport terminal hall with polished floors. People in business attire are seen walking as silhouettes across the vast white floor space. The scene is illuminated by soft, natural light coming from large unseen windows, creating an editorial, high-end atmosphere with a primary blue and white color palette." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBR0xZAN1KERjfok8epQU4CUz80jGd7ILvpB-e7JUeDQBoM0YJ6EmeUzabp7vgTbJmuIv0zRSenTTRPnUf5ZdzDI0ZU7LZ-pfjBLRiEpP_OTKfL7zCASIHB9853b2ne4N-ABDXrZPqYLmpgqBrXQRXI1u5LUajTJU9GDuWK9Kfo_W_P9LCwhvTbdZzA6YkUIQRhAk4Y7DmAwgN0t1LQJKh5mCSpjhzPSHMojAZzol7w5GO_dvxSOZGQNzUGQNUGIqDoKf7bUmlpGzdE"/>
+<div class="absolute inset-0 bg-gradient-to-t from-on-secondary-fixed/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-6">
+<p class="text-white font-label text-xs tracking-widest font-medium">ENCRYPTED FEED SIGNAL</p>
+</div>
+</div>
+</div>
+<!-- Density Map -->
+<div class="space-y-6">
+<div class="flex items-center justify-between">
+<h3 class="font-headline text-xl font-semibold text-on-surface flex items-center gap-2">
+<span class="material-symbols-outlined text-tertiary" data-icon="heat_map">heat_pump</span>
+                        density map
+                    </h3>
+<span class="font-label text-xs uppercase tracking-tighter text-on-surface-variant">Computed Heat Profile</span>
+</div>
+<div class="aspect-video bg-surface-container-high rounded overflow-hidden relative group">
+<img alt="Density Map" class="w-full h-full object-cover grayscale brightness-50 contrast-125" data-alt="A sophisticated data visualization showing a crowd density heatmap. Bright vibrant clusters of yellow and orange indicate high-density areas against a deep midnight blue background. The style is minimalist and clean, resembling a high-end scholarly medical or architectural simulation with precise, digital glow effects and no unnecessary clutter." src="https://lh3.googleusercontent.com/aida-public/AB6AXuD5RvbG2WqnVZjjYAym0u86KfTVMOt9Q9Vzz4sY0QqDEcrzGWNYSn6EHk3slSkqHB93Rrpf4W78ZZAZ9-XuxD1nsgnBFCs1ZO-bwSX651-UWo7u9_nX91ZhCgEtEELb0KQMjmeaBWGp9d26b_JEGNHSfW-_tIrxjm7MS793wsZrtZslRWONcqBUKfF9vWziMFJKiipi_2r5OtPEKBSISxXTCRye0703xLPOKNIhiGQN56DnYZ2M4VaOSS13e8eM3YiAGH68U_-osqsq"/>
+<div class="absolute inset-0 flex items-center justify-center pointer-events-none">
+<!-- Visual overlay representing the "Density Map" processing -->
+<div class="w-full h-full absolute inset-0 opacity-40 bg-[radial-gradient(circle_at_center,_transparent_0%,_#094cb2_100%)]"></div>
+</div>
+</div>
+</div>
+</div>
+<!-- Data Cards Row -->
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-16">
+<!-- People Detected -->
+<div class="bg-surface-container-lowest p-8 border-l-4 border-primary transition-all duration-300 hover:bg-surface-container-low group">
+<p class="font-label text-xs uppercase tracking-[0.15em] text-on-surface-variant mb-4">People Detected</p>
+<div class="flex items-baseline gap-2">
+<span class="font-headline text-6xl text-primary font-bold transition-transform group-hover:scale-105 duration-300">16</span>
+<span class="font-label text-on-surface-variant font-medium">units</span>
+</div>
+</div>
+<!-- Inference Status -->
+<div class="bg-surface-container-lowest p-8 border-l-4 border-tertiary transition-all duration-300 hover:bg-surface-container-low">
+<p class="font-label text-xs uppercase tracking-[0.15em] text-on-surface-variant mb-4">Inference Status</p>
+<div class="space-y-1">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-tertiary text-sm" style="font-variation-settings: 'FILL' 1;">sync</span>
+<span class="font-display text-2xl text-tertiary font-bold tracking-tight">running</span>
+</div>
+<p class="font-label text-[10px] text-outline tracking-wider uppercase">Updated 21:04:12</p>
+</div>
+</div>
+<!-- Venue Capacity -->
+<div class="bg-surface-container-lowest p-8 border-l-4 border-on-surface transition-all duration-300 hover:bg-surface-container-low">
+<p class="font-label text-xs uppercase tracking-[0.15em] text-on-surface-variant mb-4">Venue Capacity</p>
+<div class="flex items-baseline justify-between mb-2">
+<span class="font-display text-2xl text-on-surface font-bold tracking-tight">16 / 100</span>
+<span class="font-label text-lg text-primary font-bold">16%</span>
+</div>
+<div class="w-full h-1 bg-surface-container-high rounded-full overflow-hidden">
+<div class="h-full bg-primary w-[16%] transition-all duration-1000"></div>
+</div>
+</div>
+<!-- Model Used -->
+<div class="bg-surface-container-lowest p-8 border-l-4 border-primary-container transition-all duration-300 hover:bg-surface-container-low">
+<p class="font-label text-xs uppercase tracking-[0.15em] text-on-surface-variant mb-4">Model Used</p>
+<div class="space-y-1">
+<p class="font-label text-[10px] text-primary-container font-bold uppercase tracking-widest">Selection: Expected Count</p>
+<div class="flex flex-col">
+<p class="font-display text-lg text-on-surface font-semibold leading-tight">CAN Part B</p>
+<p class="font-body text-sm text-on-surface-variant tracking-tight">(sparse, up to 200 people)</p>
+</div>
+</div>
+</div>
+</div>
+<!-- Footer Action -->
+<div class="flex flex-col items-center gap-8 py-12">
+<button class="group flex items-center gap-4 border border-outline-variant px-12 py-4 rounded-full font-label text-sm uppercase tracking-[0.2em] font-bold text-on-surface-variant hover:border-primary hover:text-primary hover:bg-primary/5 transition-all duration-500">
+<span class="material-symbols-outlined transition-transform group-hover:rotate-180 duration-500" data-icon="tune">tune</span>
+                change capacity
+            </button>
+<p class="font-body text-xs text-outline max-w-md text-center leading-relaxed font-medium">
+                Capacity thresholds influence real-time alert systems and historical archiving metadata. Adjustments are logged for institutional audit trails.
+            </p>
+</div>
+</main>
+<!-- Footer -->
+<footer class="bg-surface-dim dark:bg-inverse-surface border-t border-outline-variant/10">
+<div class="flex flex-col md:flex-row justify-between items-center w-full px-12 py-16 gap-8 max-w-screen-2xl mx-auto">
+<div class="flex flex-col items-center md:items-start gap-4">
+<span class="font-headline text-xl text-on-surface dark:text-inverse-on-surface font-bold tracking-tight">Alexandria</span>
+<p class="font-body text-sm tracking-tight text-on-surface-variant font-medium">© 2024 Alexandria Collective. Scholarly Precision.</p>
+</div>
+<nav class="flex flex-wrap justify-center gap-8 md:gap-12">
+<a class="font-body text-sm tracking-tight font-semibold text-on-surface-variant hover:underline decoration-tertiary underline-offset-4 transition-all" href="#">Archives</a>
+<a class="font-body text-sm tracking-tight font-semibold text-on-surface-variant hover:underline decoration-tertiary underline-offset-4 transition-all" href="#">Terms of Service</a>
+<a class="font-body text-sm tracking-tight font-semibold text-on-surface-variant hover:underline decoration-tertiary underline-offset-4 transition-all" href="#">Privacy Policy</a>
+<a class="font-body text-sm tracking-tight font-semibold text-on-surface-variant hover:underline decoration-tertiary underline-offset-4 transition-all" href="#">Institutional Access</a>
+</nav>
+<div class="flex gap-4">
+<div class="w-8 h-8 rounded bg-surface-container-high flex items-center justify-center hover:bg-primary/10 transition-colors cursor-pointer group">
+<span class="material-symbols-outlined text-lg text-on-surface-variant group-hover:text-primary">rss_feed</span>
+</div>
+<div class="w-8 h-8 rounded bg-surface-container-high flex items-center justify-center hover:bg-primary/10 transition-colors cursor-pointer group">
+<span class="material-symbols-outlined text-lg text-on-surface-variant group-hover:text-primary">share</span>
+</div>
+</div>
+</div>
+</footer>
+<script>
+        // Micro-interaction for live count pulsing
+        document.addEventListener('DOMContentLoaded', () => {
+            const countElement = document.querySelector('.font-headline.text-6xl');
+            let count = 16;
+            
+            // Subtle simulation of live updating
+            setInterval(() => {
+                if (Math.random() > 0.8) {
+                    const change = Math.random() > 0.5 ? 1 : -1;
+                    count = Math.max(0, count + change);
+                    countElement.textContent = count;
+                    countElement.classList.add('scale-110', 'text-tertiary');
+                    setTimeout(() => {
+                        countElement.classList.remove('scale-110', 'text-tertiary');
+                    }, 500);
+                }
+            }, 5000);
+        });
+    </script>
+</body></html>

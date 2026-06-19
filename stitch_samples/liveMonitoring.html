@@ -1,0 +1,405 @@
+<!DOCTYPE html><html class="dark" lang="en" style=""><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>Alexandria | Live Monitoring</title>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<!-- Google Fonts: Noto Serif, Inter, Public Sans -->
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;family=Noto+Serif:ital,wght@0,400;0,700;1,400&amp;family=Public+Sans:wght@300;400;600&amp;display=swap" rel="stylesheet">
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "on-secondary-fixed": "#171c20",
+                    "inverse-on-surface": "#f2f0f1",
+                    "surface-tint": "#2259bf",
+                    "secondary-container": "#dfe3e8",
+                    "on-surface-variant": "#434653",
+                    "surface-container-highest": "#e3e2e3",
+                    "on-primary-fixed-variant": "#00419d",
+                    "on-secondary-fixed-variant": "#42474b",
+                    "inverse-surface": "#303031",
+                    "surface-bright": "#faf9fa",
+                    "surface": "#faf9fa",
+                    "tertiary": "#6d5e00",
+                    "surface-dim": "#dbdadb",
+                    "on-primary-container": "#e7ebff",
+                    "tertiary-container": "#bfab49",
+                    "on-tertiary-container": "#4a3f00",
+                    "error-container": "#ffdad6",
+                    "tertiary-fixed-dim": "#dcc661",
+                    "outline": "#737784",
+                    "on-secondary": "#ffffff",
+                    "primary": "#094cb2",
+                    "on-tertiary": "#ffffff",
+                    "primary-container": "#3366cc",
+                    "on-background": "#1b1c1d",
+                    "on-secondary-container": "#606569",
+                    "error": "#ba1a1a",
+                    "surface-container-low": "#f5f3f4",
+                    "secondary-fixed-dim": "#c2c7cc",
+                    "on-error-container": "#93000a",
+                    "on-tertiary-fixed": "#211b00",
+                    "surface-container-lowest": "#ffffff",
+                    "surface-variant": "#e3e2e3",
+                    "on-tertiary-fixed-variant": "#524600",
+                    "background": "#faf9fa",
+                    "secondary-fixed": "#dfe3e8",
+                    "secondary": "#5a5f63",
+                    "on-error": "#ffffff",
+                    "outline-variant": "#c3c6d5",
+                    "tertiary-fixed": "#f9e37a",
+                    "inverse-primary": "#b1c5ff",
+                    "primary-fixed-dim": "#b1c5ff",
+                    "on-primary": "#ffffff",
+                    "surface-container": "#efedee",
+                    "on-surface": "#1b1c1d",
+                    "surface-container-high": "#e9e8e9",
+                    "primary-fixed": "#d9e2ff",
+                    "on-primary-fixed": "#001946",
+                    brand: {
+                      navy: '#1a365d',
+                      blue: '#2563eb',
+                    }
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.125rem",
+                    "lg": "0.25rem",
+                    "xl": "0.5rem",
+                    "full": "0.75rem"
+            },
+            "fontFamily": {
+                    "headline": ["Noto Serif"],
+                    "display": ["Noto Serif"],
+                    "body": ["Inter"],
+                    "label": ["Public Sans"],
+                    "sans": ["Inter", "sans-serif"]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 24;
+            vertical-align: middle;
+        }
+        
+        #shader-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: -1;
+            pointer-events: none;
+            display: block;
+        }
+
+        .glass-card {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .momentum-reveal {
+            opacity: 0;
+            transform: translateY(30px) scale(0.98);
+            filter: blur(10px);
+            transition: opacity 1.2s cubic-bezier(0.16, 1, 0.3, 1), 
+                        transform 1.2s cubic-bezier(0.16, 1, 0.3, 1), 
+                        filter 1.2s cubic-bezier(0.16, 1, 0.3, 1);
+            will-change: transform, opacity, filter;
+        }
+
+        .momentum-reveal.revealed {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+            filter: blur(0);
+        }
+
+        header, main, footer {
+            position: relative;
+            z-index: 10;
+        }
+    </style>
+</head>
+<body class="bg-[#0c0d0d] text-white/90 font-body selection:bg-brand-blue/30 overflow-x-hidden">
+<!-- WebGL Shader Background -->
+<canvas id="shader-canvas" width="1280" height="1603"></canvas>
+<!-- TopNavBar -->
+<header class="bg-black/20 backdrop-blur-xl border-b border-white/10 sticky top-0 z-50">
+<div class="flex justify-between items-center w-full px-8 py-5 max-w-screen-2xl mx-auto">
+<!-- Brand Logo -->
+<div class="flex items-center gap-2">
+<svg class="w-8 h-8 text-brand-blue" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24">
+<path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"></path>
+<circle cx="12" cy="12" r="3"></circle>
+</svg>
+<span class="font-headline text-xl font-bold text-white tracking-tight">Alexandria</span>
+</div>
+<!-- Navigation Links -->
+<nav class="hidden md:flex gap-10 items-center text-sm font-medium">
+<a class="hover:text-brand-blue transition-colors text-white" href="#" data-stitch-orig-opacity="0">Upload</a>
+<a class="text-brand-blue border-b-2 border-brand-blue pb-1" href="#">Results</a>
+<a class="hover:text-brand-blue transition-colors text-white" href="#" data-stitch-orig-opacity="0">About</a>
+</nav>
+<!-- Actions -->
+<div class="flex items-center gap-6">
+<button class="bg-brand-blue hover:bg-blue-700 text-white px-6 py-2.5 rounded-sm text-sm font-semibold transition-all shadow-sm">
+                    Monitor Live
+                </button>
+<div class="flex items-center gap-4 text-white">
+<span class="material-symbols-outlined hover:text-white cursor-pointer transition-colors" data-icon="account_circle">account_circle</span>
+<span class="material-symbols-outlined hover:text-white cursor-pointer transition-colors" data-icon="settings">settings</span>
+</div>
+</div>
+</div>
+</header>
+<main class="max-w-screen-2xl mx-auto px-8 py-16 md:py-24">
+<!-- Section Header -->
+<div class="mb-16 flex flex-col md:flex-row md:items-end justify-between gap-6 border-b border-white/10 pb-10 momentum-reveal revealed">
+<div class="space-y-3">
+<p class="font-label uppercase tracking-[0.4em] text-[10px] font-bold text-white">Scholarly Surveillance Interface</p>
+<h1 class="font-headline text-4xl md:text-5xl lg:text-6xl text-white font-bold tracking-tight leading-tight">Live Monitoring</h1>
+</div>
+<div class="flex items-center gap-3 bg-white/5 px-4 py-2 rounded-full border border-white/5 text-white">
+<span class="w-2 h-2 rounded-full bg-error animate-pulse shadow-[0_0_8px_rgba(186,26,26,0.6)]"></span>
+<span class="font-label text-[10px] uppercase tracking-widest font-bold">Session Live: 02:45:12</span>
+</div>
+</div>
+<!-- Main Visual Feeds -->
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-12 mb-12">
+<!-- Webcam Feed -->
+<div class="space-y-6 momentum-reveal revealed" style="transition-delay: 0.1s;">
+<div class="flex items-center justify-between">
+<h3 class="font-headline text-lg font-semibold text-white/90 flex items-center gap-2 uppercase tracking-wider">
+<span class="material-symbols-outlined text-brand-blue" data-icon="videocam">videocam</span>
+                        webcam feed
+                    </h3>
+<span class="font-label text-[10px] uppercase tracking-widest font-semibold text-white">Station 04 • High Hall</span>
+</div>
+<div class="aspect-video bg-black/40 rounded-sm overflow-hidden relative group border border-white/10">
+<img alt="Webcam Feed" class="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105 opacity-80" data-alt="A high-angle surveillance perspective of a bright, modern airport terminal hall with polished floors. People in business attire are seen walking as silhouettes across the vast white floor space. The scene is illuminated by soft, natural light coming from large unseen windows, creating an editorial, high-end atmosphere with a primary blue and white color palette." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBR0xZAN1KERjfok8epQU4CUz80jGd7ILvpB-e7JUeDQBoM0YJ6EmeUzabp7vgTbJmuIv0zRSenTTRPnUf5ZdzDI0ZU7LZ-pfjBLRiEpP_OTKfL7zCASIHB9853b2ne4N-ABDXrZPqYLmpgqBrXQRXI1u5LUajTJU9GDuWK9Kfo_W_P9LCwhvTbdZzA6YkUIQRhAk4Y7DmAwgN0t1LQJKh5mCSpjhzPSHMojAZzol7w5GO_dvxSOZGQNzUGQNUGIqDoKf7bUmlpGzdE">
+<div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex items-end p-6">
+<p class="text-white/80 font-label text-[10px] tracking-[0.3em] font-bold">ENCRYPTED FEED SIGNAL</p>
+</div>
+</div>
+</div>
+<!-- Density Map -->
+<div class="space-y-6 momentum-reveal revealed" style="transition-delay: 0.2s;">
+<div class="flex items-center justify-between">
+<h3 class="font-headline text-lg font-semibold text-white/90 flex items-center gap-2 uppercase tracking-wider">
+<span class="material-symbols-outlined text-tertiary-fixed-dim" data-icon="heat_map">heat_pump</span>
+                        density map
+                    </h3>
+<span class="font-label text-[10px] uppercase tracking-widest font-semibold text-white">Computed Heat Profile</span>
+</div>
+<div class="aspect-video bg-black/40 rounded-sm overflow-hidden relative group border border-white/10">
+<img alt="Density Map" class="w-full h-full object-cover grayscale brightness-75 contrast-125" data-alt="A sophisticated data visualization showing a crowd density heatmap. Bright vibrant clusters of yellow and orange indicate high-density areas against a deep midnight blue background. The style is minimalist and clean, resembling a high-end scholarly medical or architectural simulation with precise, digital glow effects and no unnecessary clutter." src="https://lh3.googleusercontent.com/aida-public/AB6AXuD5RvbG2WqnVZjjYAym0u86KfTVMOt9Q9Vzz4sY0QqDEcrzGWNYSn6EHk3slSkqHB93Rrpf4W78ZZAZ9-XuxD1nsgnBFCs1ZO-bwSX651-UWo7u9_nX91ZhCgEtEELb0KQMjmeaBWGp9d26b_JEGNHSfW-_tIrxjm7MS793wsZrtZslRWONcqBUKfF9vWziMFJKiipi_2r5OtPEKBSISxXTCRye0703xLPOKNIhiGQN56DnYZ2M4VaOSS13e8eM3YiAGH68U_-osqsq">
+<div class="absolute inset-0 flex items-center justify-center pointer-events-none">
+<div class="w-full h-full absolute inset-0 opacity-30 bg-[radial-gradient(circle_at_center,_transparent_0%,_#094cb2_100%)]"></div>
+</div>
+</div>
+</div>
+</div>
+<!-- Data Cards Row -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16 max-w-5xl mx-auto"><!-- Inference Status -->
+<div class="glass-card p-8 rounded-sm transition-all duration-500 hover:bg-white/5 momentum-reveal revealed" style="transition-delay: 0.1s;">
+    <p class="font-label text-[10px] uppercase tracking-[0.2em] mb-5 font-bold text-white">Inference Status</p>
+    <div class="space-y-2">
+        <div class="flex items-center gap-2">
+            <span class="material-symbols-outlined text-white text-sm animate-spin-slow" style="font-variation-settings: 'FILL' 1;">sync</span>
+            <span class="font-display text-2xl text-white font-bold tracking-tight uppercase">running</span>
+        </div>
+        <p class="font-label text-[9px] tracking-[0.15em] uppercase font-bold text-white">Updated 21:04:12</p>
+    </div>
+</div>
+<!-- People Detected -->
+<div class="glass-card p-8 rounded-sm transition-all duration-500 hover:bg-white/5 momentum-reveal revealed" style="transition-delay: 0.2s;">
+    <p class="font-label text-[10px] uppercase tracking-[0.2em] mb-5 font-bold text-white">People Detected</p>
+    <div class="flex items-baseline gap-2">
+        <span class="font-headline text-6xl font-bold tracking-tighter text-white" id="live-count">15</span>
+        <span class="font-label text-xs font-bold uppercase tracking-widest text-white">units</span>
+    </div>
+</div>
+<!-- Venue Capacity -->
+<div class="glass-card p-8 rounded-sm transition-all duration-500 hover:bg-white/5 momentum-reveal revealed" style="transition-delay: 0.3s;">
+    <p class="font-label text-[10px] uppercase tracking-[0.2em] mb-5 font-bold text-white">Venue Capacity</p>
+    <div class="flex items-baseline justify-between mb-4">
+        <span class="font-display text-4xl text-white font-bold tracking-tight">16%</span>
+    </div>
+    <div class="w-full h-2 bg-white/10 rounded-full overflow-hidden">
+        <div class="h-full bg-green-500 w-[16%] transition-all duration-1000 shadow-[0_0_8px_rgba(34,197,94,0.6)]"></div>
+    </div>
+</div></div>
+<!-- Footer Action -->
+<div class="flex flex-col items-center gap-10 py-16 momentum-reveal revealed" style="transition-delay: 0.5s;">
+<button class="group flex items-center gap-4 bg-white/5 border border-white/10 px-10 py-4 rounded-sm font-label text-xs uppercase tracking-[0.3em] font-bold text-white/60 hover:border-brand-blue hover:text-white hover:bg-brand-blue/10 transition-all duration-500 shadow-xl">
+<span class="material-symbols-outlined transition-transform group-hover:rotate-180 duration-700" data-icon="tune">tune</span>
+                change capacity
+            </button>
+<p class="font-body text-[11px] max-w-sm text-center leading-relaxed font-medium uppercase tracking-widest text-white">
+                Capacity thresholds influence real-time alert systems and historical archiving metadata. Adjustments are logged for institutional audit trails.
+            </p>
+</div>
+</main>
+<!-- Footer -->
+<footer class="bg-black/40 backdrop-blur-md border-t border-white/10">
+<div class="flex flex-col md:flex-row justify-between items-center w-full px-12 py-16 gap-10 max-w-screen-2xl mx-auto">
+<div class="flex flex-col items-center md:items-start gap-4">
+<span class="font-headline text-xl text-white font-bold tracking-tight">Alexandria</span>
+<p class="font-body text-xs tracking-tight font-medium uppercase text-white">© 2024 Alexandria Collective. Scholarly Precision.</p>
+</div>
+<nav class="flex flex-wrap justify-center gap-10">
+<a class="font-label text-xs tracking-[0.1em] font-bold hover:text-brand-blue transition-all uppercase text-white" href="#">Archives</a>
+<a class="font-label text-xs tracking-[0.1em] font-bold hover:text-brand-blue transition-all uppercase text-white" href="#">Terms of Service</a>
+<a class="font-label text-xs tracking-[0.1em] font-bold hover:text-brand-blue transition-all uppercase text-white" href="#">Privacy Policy</a>
+<a class="font-label text-xs tracking-[0.1em] font-bold hover:text-brand-blue transition-all uppercase text-white" href="#">Institutional Access</a>
+</nav>
+<div class="flex gap-4">
+<div class="w-10 h-10 rounded-sm bg-white/5 border border-white/10 flex items-center justify-center hover:bg-brand-blue/10 hover:border-brand-blue/30 transition-all cursor-pointer group">
+<span class="material-symbols-outlined text-lg group-hover:text-brand-blue text-white">rss_feed</span>
+</div>
+<div class="w-10 h-10 rounded-sm bg-white/5 border border-white/10 flex items-center justify-center hover:bg-brand-blue/10 hover:border-brand-blue/30 transition-all cursor-pointer group">
+<span class="material-symbols-outlined text-lg group-hover:text-brand-blue text-white">share</span>
+</div>
+</div>
+</div>
+</footer>
+<script>
+    // WebGL Shader Integration
+    (function() {
+      const canvas = document.getElementById('shader-canvas');
+      const gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
+      if (!gl) return;
+
+      function syncSize() {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+        gl.viewport(0, 0, canvas.width, canvas.height);
+      }
+      window.addEventListener('resize', syncSize);
+      syncSize();
+
+      const vsSource = `
+        attribute vec2 position;
+        varying vec2 v_texCoord;
+        void main() {
+          v_texCoord = position * 0.5 + 0.5;
+          gl_Position = vec4(position, 0.0, 1.0);
+        }
+      `;
+
+      const fsSource = `
+        precision highp float;
+        uniform float u_time;
+        uniform vec2 u_resolution;
+        uniform vec2 u_mouse;
+        varying vec2 v_texCoord;
+
+        void main() {
+            vec2 uv = v_texCoord;
+            vec2 p = (gl_FragCoord.xy * 2.0 - u_resolution.xy) / min(u_resolution.x, u_resolution.y);
+            
+            for(float i = 1.0; i < 4.0; i++){
+                p.x += 0.3 / i * sin(i * 3.0 * p.y + u_time * 0.1) + u_mouse.x / u_resolution.x * 0.05;
+                p.y += 0.3 / i * cos(i * 3.0 * p.x + u_time * 0.1) + u_mouse.y / u_resolution.y * 0.05;
+            }
+            
+            vec3 color1 = vec3(0.047, 0.051, 0.051); 
+            vec3 color2 = vec3(0.08, 0.1, 0.12); 
+            
+            float noise = 0.5 + 0.5 * sin(p.x + p.y + u_time * 0.05);
+            vec3 finalColor = mix(color1, color2, noise * 0.3);
+            
+            float vignette = 1.0 - length(uv - 0.5) * 0.8;
+            gl_FragColor = vec4(finalColor * vignette, 1.0);
+        }
+      `;
+
+      function createShader(gl, type, source) {
+        const shader = gl.createShader(type);
+        gl.shaderSource(shader, source);
+        gl.compileShader(shader);
+        return shader;
+      }
+
+      const program = gl.createProgram();
+      gl.attachShader(program, createShader(gl, gl.VERTEX_SHADER, vsSource));
+      gl.attachShader(program, createShader(gl, gl.FRAGMENT_SHADER, fsSource));
+      gl.linkProgram(program);
+      gl.useProgram(program);
+
+      const vertices = new Float32Array([-1,-1, 1,-1, -1,1, 1,1]);
+      const buffer = gl.createBuffer();
+      gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
+      gl.bufferData(gl.ARRAY_BUFFER, vertices, gl.STATIC_DRAW);
+
+      const posLoc = gl.getAttribLocation(program, 'position');
+      gl.enableVertexAttribArray(posLoc);
+      gl.vertexAttribPointer(posLoc, 2, gl.FLOAT, false, 0, 0);
+
+      const uTime = gl.getUniformLocation(program, 'u_time');
+      const uRes = gl.getUniformLocation(program, 'u_resolution');
+      const uMouse = gl.getUniformLocation(program, 'u_mouse');
+
+      let mx = canvas.width / 2, my = canvas.height / 2;
+      window.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; });
+
+      function render(t) {
+        gl.uniform1f(uTime, t * 0.001);
+        gl.uniform2f(uRes, canvas.width, canvas.height);
+        gl.uniform2f(uMouse, mx, my);
+        gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+        requestAnimationFrame(render);
+      }
+      requestAnimationFrame(render);
+    })();
+
+    // Momentum Reveal System
+    const revealObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('revealed');
+        }
+      });
+    }, { threshold: 0.1 });
+
+    document.querySelectorAll('.momentum-reveal').forEach(el => revealObserver.observe(el));
+
+    // Live update simulation
+    document.addEventListener('DOMContentLoaded', () => {
+        const countElement = document.getElementById('live-count');
+        let count = 16;
+        setInterval(() => {
+            if (Math.random() > 0.85) {
+                const change = Math.random() > 0.5 ? 1 : -1;
+                count = Math.max(0, count + change);
+                countElement.textContent = count;
+                countElement.classList.add('scale-110', 'text-tertiary-fixed-dim');
+                setTimeout(() => {
+                    countElement.classList.remove('scale-110', 'text-tertiary-fixed-dim');
+                }, 400);
+            }
+        }, 4000);
+    });
+</script>
+<style>
+    @keyframes spin-slow {
+        from { transform: rotate(0deg); }
+        to { transform: rotate(360deg); }
+    }
+    .animate-spin-slow {
+        animation: spin-slow 8s linear infinite;
+    }
+</style>
+
+
+
+
+</body></html>
