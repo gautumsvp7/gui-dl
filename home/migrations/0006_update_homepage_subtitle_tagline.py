@@ -1,28 +1,26 @@
 from django.db import migrations
 
 
-def update_homepage_text(apps, schema_editor):
+def update_subtitle(apps, schema_editor):
     HomePage = apps.get_model('home', 'HomePage')
     HomePage.objects.filter(slug='home').update(
-        banner_title='CrowdVision',
         banner_subtitle='<p>See Everything. Protect Everyone.</p>',
     )
 
 
-def revert_homepage_text(apps, schema_editor):
+def revert_subtitle(apps, schema_editor):
     HomePage = apps.get_model('home', 'HomePage')
     HomePage.objects.filter(slug='home').update(
-        banner_title='My Application',
-        banner_subtitle='<p>My Application Subtitle</p>',
+        banner_subtitle='<p>Safety, powered by AI</p>',
     )
 
 
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('home', '0004_homepage_banner_image'),
+        ('home', '0005_update_homepage_title_subtitle'),
     ]
 
     operations = [
-        migrations.RunPython(update_homepage_text, revert_homepage_text),
+        migrations.RunPython(update_subtitle, revert_subtitle),
     ]

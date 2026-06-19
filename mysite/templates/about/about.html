@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load static %}
 
 {% block title %}About – CrowdVision{% endblock %}
 {% block nav_about %}text-brand-blue border-b-2 border-brand-blue pb-1{% endblock %}
@@ -15,21 +16,21 @@
     <h1 class="font-headline text-5xl md:text-7xl font-bold leading-tight mb-12 text-white">
       About CrowdVision
     </h1>
-    <div class="space-y-8 text-lg md:text-xl font-body leading-relaxed text-white/60 max-w-2xl">
+    <div class="space-y-8 text-lg md:text-xl font-body leading-relaxed text-white/60 max-w-2xl text-justify">
       <p>
-        We started CrowdVision because the tools venues use to manage crowds haven't really changed. A person at the door with a clicker, or a basic entry sensor that tells you a number but nothing else. No map, no hotspots, no warning before things get dangerous.
+        Crowd management tools haven't changed much. A clicker at the door, a basic entry sensor — you get a number, maybe, but nothing else. No spatial awareness, no warning when density is climbing toward dangerous.
       </p>
       <p>
-        We're a team of students from UTS Sydney who built this as a deep learning project, but the problem we set out to solve is very real. Crowd crushes and stampedes aren't freak accidents. They are the result of density building up faster than anyone noticed.
+        We're a team of students from UTS Sydney, and we built CrowdVision as a deep learning project. But the problem we were solving is real. Crowd crushes and stampedes aren't freak accidents — they're the result of density building up faster than anyone noticed, in spaces where no one had the right information.
       </p>
       <p class="font-bold text-white border-l-4 border-tertiary pl-6 py-2 italic">
         Most of those incidents are preventable with better information.
       </p>
       <p>
-        CrowdVision gives venues that information. Connect your existing CCTV infrastructure and within seconds you get a live count and a heatmap showing exactly where people are concentrated. Not just how many, but where. That's the part that matters when you need to decide whether to open another exit, redirect foot traffic, or call for extra staff.
+        CrowdVision gives venues that information. Connect your existing CCTV infrastructure and within seconds you get a live count and a heatmap showing exactly where people are concentrated — not just how many, but where. And when density crosses a dangerous threshold, CrowdVision doesn't wait for someone to notice. It sends an automatic alert instantly, so your team can act before it becomes a crisis — whether that means opening another exit, redirecting foot traffic, or calling for extra staff.
       </p>
       <p>
-        The key is that you don't need to rip out or replace anything. Most venues already have cameras everywhere — CrowdVision just makes them smarter.
+        You don't need to replace anything. Most venues already have cameras everywhere — CrowdVision just makes them smarter.
       </p>
     </div>
     <div class="mt-16 pt-8 border-t border-white/10 flex items-center gap-4">
@@ -48,12 +49,12 @@
         <div class="group flex items-center gap-8 p-4 rounded-xl transition-all duration-500 hover:bg-white/5">
           <div class="relative flex-shrink-0">
             <div class="absolute -inset-1 rounded-full bg-gradient-to-tr from-primary to-tertiary blur opacity-20 group-hover:opacity-60 transition duration-500"></div>
-            <img alt="Gautum V." class="relative w-24 h-24 md:w-32 md:h-32 rounded-full object-cover filter grayscale group-hover:grayscale-0 transition-all duration-700"
-                 src="https://lh3.googleusercontent.com/aida-public/AB6AXuCgW7mxiTSFJOWvTeUXXUaxAmN-J_4VhxXltdo1Enw5mh0tS9x9DIw7Tnj8eYcn-4jWZM7yXgP8tsjIRFz5-6z3moAGlC3O_AIeaVTyhK0xGRpP3V1Kf39S1FyyHK1UxKCrhzEayQ0-p3T7-XZo2mNAEG1GF6Qt3UawxctglPKm0ZGZepfTvGpq3CLQKzYg7HcTG0yrHcn4G5hqeZjpmq_6c2TE0RQfniw0MIuYhyT6PzR2Iu6fpMorpoyN-ei0NcZjOB97i7Toln_4"/>
+            <img alt="Gautum V." class="relative w-24 h-24 md:w-32 md:h-32 rounded-full object-cover transition-all duration-700"
+                 src="{% static 'images/gautum.jpg' %}"/>
           </div>
           <div>
-            <h4 class="font-headline text-2xl font-bold text-white group-hover:text-primary-fixed transition-colors">Gautum V.</h4>
-            <p class="font-label text-xs uppercase tracking-widest text-tertiary-fixed mt-1">Lead Researcher</p>
+            <h4 class="font-headline text-2xl font-bold text-white group-hover:text-primary-fixed transition-colors">Gautum Parambil</h4>
+            <!-- <p class="font-label text-xs uppercase tracking-widest text-tertiary-fixed mt-1">Lead Researcher</p> -->
           </div>
         </div>
 
@@ -61,12 +62,12 @@
         <div class="group flex items-center gap-8 p-4 rounded-xl transition-all duration-500 hover:bg-white/5">
           <div class="relative flex-shrink-0">
             <div class="absolute -inset-1 rounded-full bg-gradient-to-tr from-primary to-tertiary blur opacity-20 group-hover:opacity-60 transition duration-500"></div>
-            <img alt="Manaswini Doma" class="relative w-24 h-24 md:w-32 md:h-32 rounded-full object-cover filter grayscale group-hover:grayscale-0 transition-all duration-700"
-                 src="https://lh3.googleusercontent.com/aida-public/AB6AXuDvlZjdZRhwwRIyTcKgVd6rZVjETaOXHWs4HT9kHgKqO6bVCPrep1GXPHK5hMCtS5RFpuQgrcItow5vmvEmwiSP1b_TGBQxTplkIR5XUAA_HvzByEoS87SW65QRMc_xONDuD8IJDTkk9b96pC3Qh_5FpvFqu8p2apArAIlYrzPoWR0sX1NigYaf_u3ece-m6P-yHUcqmYzb9ID36DfMPbYAPINZ40MdkeXcK-oxYvsMk71myb8J-eGuyo0GKbU3dYxWGBnI4sPEpdB4"/>
+            <img alt="Manaswini Doma" class="relative w-24 h-24 md:w-32 md:h-32 rounded-full object-cover transition-all duration-700"
+                 src="{% static 'images/Manaswini.jpg' %}"/>
           </div>
           <div>
             <h4 class="font-headline text-2xl font-bold text-white group-hover:text-primary-fixed transition-colors">Manaswini Doma</h4>
-            <p class="font-label text-xs uppercase tracking-widest text-tertiary-fixed mt-1">Systems Architect</p>
+            <!-- <p class="font-label text-xs uppercase tracking-widest text-tertiary-fixed mt-1">Systems Architect</p> -->
           </div>
         </div>
 
@@ -74,21 +75,21 @@
         <div class="group flex items-center gap-8 p-4 rounded-xl transition-all duration-500 hover:bg-white/5">
           <div class="relative flex-shrink-0">
             <div class="absolute -inset-1 rounded-full bg-gradient-to-tr from-primary to-tertiary blur opacity-20 group-hover:opacity-60 transition duration-500"></div>
-            <img alt="Dongyeon Kim" class="relative w-24 h-24 md:w-32 md:h-32 rounded-full object-cover filter grayscale group-hover:grayscale-0 transition-all duration-700"
-                 src="https://lh3.googleusercontent.com/aida-public/AB6AXuCXIZ4hRuhHMqw4BpB6JCNWRrq9mU5ZVrat-p1wzqknM5Hq2awlsxqXp-BheMrbOEg4pZ69Ph4CQYhglzmtpsvozz5MP1oRf75ZzbvYxJyYqXldfnt5xTkEuBQ8hUMwJEdANwHHL2ZUS4z_yDN9MVsADL7nZXQIltXLvuFWj2-8utIpLfNq3-70zhHrEZk5BYwRDcalDwI77zTpo6LT-qLQ18J7OiRpsvnXfo6-b7ca7-PrGHRqgNZMI4JOruK3W0WXVp2OH6hxIS-q"/>
+            <img alt="Dongyeon Kim" class="relative w-24 h-24 md:w-32 md:h-32 rounded-full object-cover transition-all duration-700"
+                 src="{% static 'images/Dongyeon.jpg' %}"/>
           </div>
           <div>
             <h4 class="font-headline text-2xl font-bold text-white group-hover:text-primary-fixed transition-colors">Dongyeon Kim</h4>
-            <p class="font-label text-xs uppercase tracking-widest text-tertiary-fixed mt-1">Product Visionary</p>
+            <!-- <p class="font-label text-xs uppercase tracking-widest text-tertiary-fixed mt-1">Product Visionary</p> -->
           </div>
         </div>
 
       </div>
 
       <!-- Aesthetic Callout -->
-      <div class="mt-20 p-8 glass-card rounded-xl">
+      <!-- <div class="mt-20 p-8 glass-card rounded-xl">
         <p class="text-white/60 text-sm font-body italic">"Precision at scale. Using deep learning to safeguard the human experience in dense urban environments."</p>
-      </div>
+      </div> -->
     </div>
   </div>
 

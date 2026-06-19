@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% load wagtailcore_tags wagtailimages_tags static %}
 
-{% block title %}CrowdVision | Safety, powered by AI{% endblock %}
+{% block title %}CrowdVision | See Everything. Protect Everyone.{% endblock %}
 
 {% block main_padding %}p-0{% endblock %}
 
@@ -26,6 +26,16 @@
   @media (prefers-reduced-motion: reduce) {
     .hero-load-reveal { transition: none !important; animation: none !important; transform: none !important; opacity: 1 !important; filter: none !important; }
   }
+  .tagline-wrap {
+    font-size: 1.25rem;
+  }
+  .tagline-wrap p {
+    font-size: inherit;
+    margin: 0;
+  }
+  @media (min-width: 768px) {
+    .tagline-wrap { font-size: 1.5rem; }
+  }
 </style>
 {% endblock %}
 
@@ -34,23 +44,24 @@
 <!-- Hero Section -->
 <section class="min-h-[90vh] flex flex-col items-center justify-center text-center px-6 pt-32 pb-24 relative overflow-hidden">
   <div class="mb-6 hero-load-reveal" style="animation-delay: 0.1s;">
-    <span class="text-[10px] uppercase tracking-[0.4em] font-bold text-white/50 font-label">Scholarly Surveillance Interface</span>
+    <!-- <span class="text-[10px] uppercase tracking-[0.4em] font-bold text-white/50 font-label">Scholarly Surveillance Interface</span> -->
   </div>
   <h1 class="hero-title font-headline font-bold text-white leading-tight hero-load-reveal" style="animation-delay: 0.2s;">
     {% if self.banner_title %}{{ self.banner_title }}{% else %}CrowdVision{% endif %}
   </h1>
-  <p class="mt-6 text-xl md:text-2xl text-white/60 font-light max-w-2xl mx-auto font-body hero-load-reveal" style="animation-delay: 0.3s;">
-    {% if self.banner_subtitle %}{{ self.banner_subtitle|richtext }}{% else %}Safety, powered by AI. Transform passive observation into proactive intelligence.{% endif %}
-  </p>
+  <div class="tagline-wrap mt-6 text-white/60 font-light max-w-2xl mx-auto font-body hero-load-reveal" style="animation-delay: 0.3s;">
+    {% if self.banner_subtitle %}{{ self.banner_subtitle|richtext }}{% else %}<p>See Everything. Protect Everyone. Transform passive observation into proactive intelligence.</p>{% endif %}
+  </div>
   <div class="mt-12 hero-load-reveal" style="animation-delay: 0.4s;">
     <a href="{% url 'crowd_app:live' %}" class="inline-block bg-brand-blue hover:bg-blue-600 text-white px-10 py-4 text-lg font-medium transition-all shadow-xl hover:-translate-y-1 no-underline">
       Monitor Live
     </a>
   </div>
   <div class="mt-24 w-full max-w-5xl px-4 md:px-0 momentum-reveal">
-    <img alt="CrowdVision Dashboard Preview"
-         class="w-full h-auto shadow-2xl border border-white/10 rounded-sm"
-         src="{% static 'images/pexels-caleboquendo-34585117.jpg' %}"/>
+    <video class="w-full h-auto shadow-2xl border border-white/10 rounded-sm"
+           autoplay loop muted playsinline>
+      <source src="{% static 'images/crowd_home.mp4' %}" type="video/mp4">
+    </video>
   </div>
 </section>
 
@@ -61,34 +72,28 @@
       <h2 class="text-4xl font-headline font-bold text-white mb-8 leading-tight momentum-reveal">Preventing incidents before they occur.</h2>
       <div class="space-y-6 text-lg text-white/60 leading-relaxed font-body">
         <p class="momentum-reveal" style="transition-delay: 0.1s;">
-          Crowd incidents at stadiums, transit hubs, and public events are almost always preventable. The problem is that most venues still rely on manual headcounts or basic entry sensors.
-        </p>
-        <p class="momentum-reveal" style="transition-delay: 0.2s;">
-          CrowdVision uses computer vision to estimate crowd size and generate a live density heatmap from any camera feed. No technical setup needed—just point and analyze.
+          Real-time crowd intelligence for the people who keep venues safe. CrowdVision analyzes live camera feeds to deliver live density heatmaps and instant capacity warnings — built for stadiums, transit hubs, and public events.
         </p>
       </div>
-      <div class="mt-12 grid grid-cols-2 gap-8">
+      <div class="mt-12 grid grid-cols-3 gap-8">
         <div class="momentum-reveal" style="transition-delay: 0.3s;">
           <span class="block text-3xl font-bold text-brand-blue">24/7</span>
           <span class="text-sm text-white/40 uppercase tracking-wider font-label">Autonomous Monitoring</span>
         </div>
         <div class="momentum-reveal" style="transition-delay: 0.4s;">
-          <span class="block text-3xl font-bold text-brand-blue">&lt; 1s</span>
-          <span class="text-sm text-white/40 uppercase tracking-wider font-label">Inference Latency</span>
+          <span class="block text-3xl font-bold text-brand-blue">Plug &amp; Play</span>
+          <span class="text-sm text-white/40 uppercase tracking-wider font-label">Any Existing Camera</span>
+        </div>
+        <div class="momentum-reveal" style="transition-delay: 0.5s;">
+          <span class="block text-3xl font-bold text-brand-blue">Instant</span>
+          <span class="text-sm text-white/40 uppercase tracking-wider font-label">Capacity Alerts</span>
         </div>
       </div>
     </div>
     <div class="relative momentum-reveal" style="transition-delay: 0.3s;">
-      <div class="bg-white/5 border border-white/10 rounded-sm p-8 flex items-center justify-center min-h-[320px]">
-        <svg viewBox="0 0 320 240" xmlns="http://www.w3.org/2000/svg" class="w-full max-w-sm opacity-60" aria-label="heatmap preview">
-          <ellipse cx="160" cy="120" rx="120" ry="80" fill="rgba(37,99,235,0.15)" stroke="rgba(37,99,235,0.4)" stroke-width="1.5"/>
-          <ellipse cx="160" cy="120" rx="85"  ry="54" fill="rgba(37,99,235,0.2)"  stroke="rgba(37,99,235,0.5)" stroke-width="1.5"/>
-          <ellipse cx="160" cy="120" rx="52"  ry="33" fill="rgba(37,99,235,0.3)"  stroke="rgba(37,99,235,0.7)" stroke-width="1.5"/>
-          <ellipse cx="160" cy="120" rx="24"  ry="14" fill="rgba(37,99,235,0.5)"  stroke="rgba(37,99,235,0.9)" stroke-width="1.5"/>
-        </svg>
-      </div>
+      <img alt="Heatmap Analysis" class="rounded-sm shadow-2xl border border-white/5 w-full" src="{% static 'images/heatmapWeb.png' %}"/>
       <div class="absolute -bottom-6 -left-6 glass-card p-6 shadow-2xl max-w-xs momentum-reveal rounded-sm" style="transition-delay: 0.5s;">
-        <p class="text-sm italic text-white/60 font-body">"CrowdVision was built to fix the gap in spatial awareness for large scale public infrastructure."</p>
+        <p class="text-sm italic text-white/60 font-body">Behind every safe event is a team that could see what was coming</p>
       </div>
     </div>
   </div>
@@ -104,24 +109,24 @@
     <div class="grid md:grid-cols-3 gap-12">
 
       <div class="group cursor-default momentum-reveal" style="transition-delay: 0.1s;">
-        <div class="h-64 bg-white/5 mb-6 overflow-hidden border border-white/10 flex items-center justify-center">
-          <span class="material-symbols-outlined text-6xl text-white/20" style="font-variation-settings: 'FILL' 0, 'wght' 100, 'GRAD' 0, 'opsz' 48;">train</span>
+        <div class="h-64 mb-6 overflow-hidden border border-white/10">
+          <img src="{% static 'images/transit.png' %}" alt="Transit Hubs" class="w-full h-full object-cover group-hover:scale-105 transition-all duration-700 ease-out"/>
         </div>
         <h4 class="text-xl font-bold mb-3 font-headline text-white">Transit Hubs</h4>
         <p class="text-white/60 font-body">Optimize commuter flow and prevent platform overcrowding with real-time bottleneck detection.</p>
       </div>
 
       <div class="group cursor-default momentum-reveal" style="transition-delay: 0.2s;">
-        <div class="h-64 bg-white/5 mb-6 overflow-hidden border border-white/10 flex items-center justify-center">
-          <span class="material-symbols-outlined text-6xl text-white/20" style="font-variation-settings: 'FILL' 0, 'wght' 100, 'GRAD' 0, 'opsz' 48;">stadium</span>
+        <div class="h-64 mb-6 overflow-hidden border border-white/10">
+          <img src="{% static 'images/sport.png' %}" alt="Sports Arenas" class="w-full h-full object-cover group-hover:scale-105 transition-all duration-700 ease-out"/>
         </div>
         <h4 class="text-xl font-bold mb-3 font-headline text-white">Sports Arenas</h4>
         <p class="text-white/60 font-body">Ensure fan safety during high-stakes exits and manage concession line distribution efficiently.</p>
       </div>
 
       <div class="group cursor-default momentum-reveal" style="transition-delay: 0.3s;">
-        <div class="h-64 bg-white/5 mb-6 overflow-hidden border border-white/10 flex items-center justify-center">
-          <span class="material-symbols-outlined text-6xl text-white/20" style="font-variation-settings: 'FILL' 0, 'wght' 100, 'GRAD' 0, 'opsz' 48;">location_city</span>
+        <div class="h-64 mb-6 overflow-hidden border border-white/10">
+          <img src="{% static 'images/publicsq.png' %}" alt="Public Squares" class="w-full h-full object-cover group-hover:scale-105 transition-all duration-700 ease-out"/>
         </div>
         <h4 class="text-xl font-bold mb-3 font-headline text-white">Public Squares</h4>
         <p class="text-white/60 font-body">Monitor urban density patterns for city planning and emergency response preparedness.</p>
